@@ -1,11 +1,10 @@
 #/**
-# * TangoMan Vue3 Boilerplate
+# * Kabab-case Kaamelott Videoboard
 # *
 # * @version  0.1.0
-# * @author   "Matthias Morin" <mat@tangoman.io>
+# * @author   "Fabrice Lazzarotto" <fabrice.lazarotto@gmail.com>
 # * @license  MIT
-# * @link     https://github.com/TangoMan75/vue3-boilerplate
-# * @link     https://www.linkedin.com/in/morinmatthias
+# * @link     https://github.com/flazzarotto/kaamelott-videoboard
 # */
 
 .PHONY: help up install serve tests lint build deploy uninstall yarn-install vue-cli-install
@@ -51,7 +50,7 @@ port?=8080
 
 ## Print this help
 help:
-	@printf "${TITLE} TangoMan $(shell basename ${CURDIR}) ${NL}\n"
+	@printf "${TITLE} Kabab-case $(shell basename ${CURDIR}) ${NL}\n"
 
 	@printf "${CAPTION} Infos:${NL}"
 	@printf "${PRIMARY} %-12s${INFO} %s${NL}" "system" "$(shell uname -s)"
@@ -62,7 +61,7 @@ help:
 	@printf "${NL}"
 
 	@printf "${CAPTION} Description:${NL}"
-	@printf "${WARNING} TangoMan Vue3 Boilerplate${NL}\n"
+	@printf "${WARNING} Kabab-case Kaamelott Videoboard${NL}\n"
 
 	@printf "${CAPTION} Usage:${NL}"
 	@printf "${WARNING}  make [command] port=[port]${NL}\n"
@@ -145,8 +144,8 @@ deploy: build
 		git add -A; \
 		printf "${INFO}git commit -m "$(shell date '+%Y-%m-%d %H:%M:%S')"${NL}"; \
 		git commit -m "$(shell date '+%Y-%m-%d %H:%M:%S')"; \
-		printf "${INFO}git push -f git@github.com:TangoMan75/vue3-boilerplate.git master:gh-pages${NL}"; \
-		git push -f git@github.com:TangoMan75/vue3-boilerplate.git master:gh-pages; \
+		printf "${INFO}git push -f git@github.com:flazzarotto/kaamelott-videoboard.git master:gh-pages${NL}"; \
+		git push -f git@github.com:flazzarotto/kaamelott-videoboard.git master:gh-pages; \
 	)
 
 ## Uninstall app
