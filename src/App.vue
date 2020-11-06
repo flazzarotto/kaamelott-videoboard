@@ -1,26 +1,49 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <h1>{{ title }}</h1>
+  <SearchBar></SearchBar>
+  <section id="videos">
+    <VideoListComponent></VideoListComponent>
+  </section>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import VideoListComponent from "@/components/VideoListComponent";
+import SearchBar from "@/components/SearchBar";
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    SearchBar,
+    VideoListComponent,
+  },
+  data() {
+    return {
+      title: 'Kaamelott Videoboard'
+    }
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+:root, body {
+  padding: 0;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 30px auto 0;
+}
+
+#videos {
+  margin: auto;
 }
 </style>
