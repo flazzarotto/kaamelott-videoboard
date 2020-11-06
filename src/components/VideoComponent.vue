@@ -2,10 +2,11 @@
   <div class="video-component">
     <div class="video-container" :style="computedStyle" v-if="!clicked && thumbnail.length">
       <img :src="thumbnail" :alt="title" @click="clicked = true" />
+      <div class="click"></div>
     </div>
     <div class="video-container" :style="computedStyle" v-else>
       <video v-if="type === 'local'" :src="src"/>
-      <div v-else v-html="src"></div>
+      <div v-else v-html="autoplay"></div>
     </div>
     <div class="text">
       <h2>{{ title }}</h2>
@@ -23,6 +24,9 @@ export default {
   props: {
     index: {
       type: Number
+    },
+    autoplay: {
+      type: String
     },
     title: {
       type: String,
@@ -113,10 +117,46 @@ export default {
   }
   img {
     width: 100%;
+  }
+  img, .click {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
+    cursor: pointer;
+  }
+
+  .click {
+    $play-btn-color: #888;
+    $play-btn-bgcolor: rgba(255,255,255,.8);
+    $play-btn-size: 3rem;
+    pointer-events: none;
+    border: 3px solid $play-btn-color;
+    border-radius: 100%;
+    width: $play-btn-size;
+    height: $play-btn-size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $play-btn-bgcolor;
+    @media screen and (min-width: 1024px) {
+      opacity: .7;
+      .video-container:hover & {
+        opacity: 1;
+      }
+    }
+    &:after {
+      content: '▶';
+      color: $play-btn-color;
+      font-size: $play-btn-size * 0.5;
+      padding-left: $play-btn-size * .15;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    &:hover .click {
+      opacity: 1;
+    }
   }
 }
 

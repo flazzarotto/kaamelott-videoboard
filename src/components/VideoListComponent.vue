@@ -1,7 +1,7 @@
 <template>
   <div id="videolist">
     <VideoComponent v-for="(v,k) in videos" :type="v.type" :key="k" :index="k" :title="v.title"
-                    :script="v.script" :keywords="v.keywords" :src="v.embedCode"
+                    :script="v.script" :keywords="v.keywords" :src="v.embedCode" :autoplay="v.autoplay"
                     :thumbnail="v.thumbnail"></VideoComponent>
     <div v-if="!videos.length">No result for your search</div>
   </div>

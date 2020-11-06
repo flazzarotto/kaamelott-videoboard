@@ -15,6 +15,9 @@ const youtubeThumbnail = function() {
         return `http://img.youtube.com/vi/${videoId}/default.jpg`
     }
 }
+const youtubeAutoplay = function(embed) {
+    return embed + (embed => (embed.indexOf('?')>-1)?'&':'?')(embed) + 'autoplay=1'
+}
 
 const VideoManager = {
     supportedTypes: {
@@ -24,7 +27,9 @@ const VideoManager = {
             },
             function (parsedUri, obj = {}) {
                 obj.videoId = parsedUri.query['v']
-                return youtubeEmbed + obj.videoId
+                const embed = youtubeEmbed + obj.videoId
+                obj.autoplay = youtubeAutoplay(embed)
+                return embed
             },
             youtubeThumbnail()
             ),
@@ -34,7 +39,9 @@ const VideoManager = {
             },
             function (parsedUri, obj = {}) {
                 obj.videoId = parsedUri.file
-                return youtubeEmbed + obj.videoId
+                const embed = youtubeEmbed + obj.videoId
+                obj.autoplay = youtubeAutoplay(embed)
+                return embed
             },
             youtubeThumbnail()),
     },
@@ -117,16 +124,21 @@ const VideoManager = {
         }
 
 
-        const props = []
-        parameters.src = embedUri
+        const autoplayProps = [], props = []
+
+        props.push('src="' + embedUri + '"')
+        autoplayProps.push('src="' + parsedObj.autoplay + '"')
 
         for (let prop in parameters) {
             props.push(prop + '="' + parameters[prop] + '"')
+            autoplayProps.push(prop + '="' + parameters[prop] + '"')
         }
+
 
         return {
             type: currentType,
             embedCode: `<iframe ${props.join(' ')}></iframe>`,
+            autoplay: `<iframe ${autoplayProps.join(' ')}></iframe>`,
             thumbnail: this.supportedTypes[currentType].getThumbnail(parsedObj.videoId)
         }
     }
