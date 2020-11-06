@@ -1,4 +1,4 @@
-# vue3-test
+# kaamelott-videoboard in VueJS3
 
 ## Project setup
 ```
