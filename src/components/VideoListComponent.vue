@@ -4,6 +4,11 @@
                     :script="v.script" :keywords="v.keywords" :src="v.embedCode" :autoplay="v.autoplay"
                     :thumbnail="v.thumbnail"></VideoComponent>
     <div v-if="!videos.length">No result for your search</div>
+    <div v-if="videos.length" class="empty"></div>
+    <div v-if="videos.length" class="empty"></div>
+    <div v-if="videos.length" class="empty"></div>
+    <div v-if="videos.length" class="empty"></div>
+    <div v-if="videos.length" class="empty"></div>
   </div>
 </template>
 
@@ -46,8 +51,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../assets/scss/variable";
 #videolist {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+}
+.empty {
+  @include video-component;
+  opacity: 0;
 }
 </style>

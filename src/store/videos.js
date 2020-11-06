@@ -22,6 +22,8 @@ for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
 
     data.characters = data.characters.replace(/\s+/,'').split(',').filter(x => characters[x])
 
+    VideoManager.addEpisode(data.episode)
+
     VideoManager
     .addVideo(
         data.link,
@@ -29,6 +31,7 @@ for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
         data.keywords,
         data.characters.map(x => characters[x]),
         data.script,
+        data.episode,
         embedParameters
     )
 }

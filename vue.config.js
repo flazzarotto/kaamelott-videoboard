@@ -1,6 +1,6 @@
 module.exports = {
     chainWebpack: (config) => {
-        // Pug Loader
+        // CSV loader
         config.module
             .rule('csv')
             .test(/\.csv$/)

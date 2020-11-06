@@ -209,8 +209,8 @@ Install vue-cli
 Continuous Integration
 ----------------------
 
-[![Build Status](https://travis-ci.org/flazzarotto/kaamelott-videoborad.svg?branch=master)](https://travis-ci.org/flazzarotto/kaamelott-videoborad) 
-If you find any bug please report here : [Issues](https://github.com/flazzarotto/kaamelott-videoborad/issues/new)
+[![Build Status](https://travis-ci.org/flazzarotto/kaamelott-videoboard.svg?branch=master)](https://travis-ci.org/flazzarotto/kaamelott-videoboard) 
+If you find any bug please report here : [Issues](https://github.com/flazzarotto/kaamelott-videoboard/issues/new)
 
 License
 -------
@@ -222,9 +222,9 @@ Distributed under the MIT license.
 
 If you like **Kebab-Case Kaamelott Videoboard** please star, follow or tweet:
 
-[![GitHub stars](https://img.shields.io/github/stars/flazzarotto/kaamelott-videoborad?style=social)](https://github.com/flazzarotto/kaamelott-videoborad/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/flazzarotto/kaamelott-videoboard?style=social)](https://github.com/flazzarotto/kaamelott-videoboard/stargazers)
 [![GitHub followers](https://img.shields.io/github/followers/Flazzarotto?style=social)](https://github.com/Flazzarotto)
-[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FFlazzarotto%2Fkaamelott-videoborad)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2FFlazzarotto%2Fkaamelott-videoborad)
+[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FFlazzarotto%2Fkaamelott-videoboard)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2FFlazzarotto%2Fkaamelott-videoboard)
 
 ... And check my other cool projects.
 

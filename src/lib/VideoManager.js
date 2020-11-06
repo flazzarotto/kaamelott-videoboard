@@ -46,6 +46,7 @@ const VideoManager = {
             youtubeThumbnail()),
     },
     videos: [],
+    episodes: {},
     toJSON() {
         return JSON.stringify(this.videos)
     },
@@ -53,22 +54,35 @@ const VideoManager = {
      * @param link link to the video
      * @param title title of the video
      * @param keywords list of comma-separated keywords (title and script will already be in the keywords)
+     * @param characters
      * @param script script of the video
+     * @param episode
      * @param embedParameters list of html parameters for iframe
      */
-    addVideo(link, title, keywords = '', characters = [], script = '', embedParameters = {}) {
+    addVideo(link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
         const params = {width: 720, height: 405, allowfullscreen: true,...embedParameters}
-        keywords = [keywords, title, characters.join(','), script].join(',').replace(/[ ,;.]+/g, ',').replace(/,$/,'')
+        keywords = [keywords, title, episode, characters.join(','), script].join(',').replace(/[ ,;.]+/g, ',').replace(/,$/,'')
         this.videos.push(
-            {...this.getEmbedCode(link, params), title, keywords, script, characters}
+            {...this.getEmbedCode(link, params), title, keywords, script, characters, episode: episode.split(' ',1)}
         )
         return this
     },
+    addEpisode(episodeStr) {
+        const nested = episodeStr.match(/^(L[0-9])(T[0-9])(E[0-9]+)\s(.*)$/)
+        let upper = this.episodes
+        for (let i = 1; i<nested.length;i++) {
+            if (!upper[nested[i]]) {
+                upper[nested[i]] = {}
+            }
+            if (i === 3) {
+                upper[nested[3]] = nested[4]
+                break
+            }
+            upper = upper[nested[i]]
+        }
+    },
     uriMatcher(string) {
         const matches = string.match(/^https?:\/\/((?:[a-z0-9\-_]+\.)+)([a-z0-9\-_]+)\/((?:[a-z0-9\-_%.]+\/)?)([a-z0-9\-_%.]+\/?)((?:\?.+)?)((?:#.*)?)$/i)
-
-        console.info({string, matches})
-
         matches[1] = matches[1].replace(/\.$/, '')
 
         return {
@@ -122,7 +136,6 @@ const VideoManager = {
         if (embedUri === false) {
             throw new Error('URI not supported or type not correctly implemented')
         }
-
 
         const autoplayProps = [], props = []
 

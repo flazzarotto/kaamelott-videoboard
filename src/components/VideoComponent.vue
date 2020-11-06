@@ -83,13 +83,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../assets/scss/variable';
 .video-component {
-  margin: 0 7.5px 15px;
-  width: 320px;
+  @include video-component;
   background: rgba(255, 255, 255, .3);
-  border: 1px solid white;
-  padding-bottom: 7.5px;
-  display: flex;
   flex-direction: column;
 
   h2 {
@@ -212,8 +209,8 @@ export default {
   cursor: pointer;
   em {
     font-style: normal;
-    text-decoration: underline;
-    text-decoration-style: dotted;
+    //text-decoration: underline;
+    //text-decoration-style: dotted;
   }
   span {
     transform-origin: 50% 50%;
