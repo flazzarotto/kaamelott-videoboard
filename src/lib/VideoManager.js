@@ -134,7 +134,6 @@ const VideoManager = {
             autoplayProps.push(prop + '="' + parameters[prop] + '"')
         }
 
-
         return {
             type: currentType,
             embedCode: `<iframe ${props.join(' ')}></iframe>`,

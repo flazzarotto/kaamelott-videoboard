@@ -1,5 +1,6 @@
 <template>
   <input type="text" v-model="search" @input="updateSearch()" />
+  <button @click="search = ''; updateSearch()">RÀZ</button>
 </template>
 
 <script>
@@ -25,6 +26,6 @@ export default {
 
 <style scoped>
 input {
-
+  width: 100%;
 }
 </style>

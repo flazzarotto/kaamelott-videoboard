@@ -2,6 +2,7 @@
   <div class="video-component">
     <div class="video-container" :style="computedStyle" v-if="!clicked && thumbnail.length">
       <img :src="thumbnail" :alt="title" @click="clicked = true" />
+      <div class="overlay"></div>
       <div class="click"></div>
     </div>
     <div class="video-container" :style="computedStyle" v-else>
@@ -158,6 +159,30 @@ export default {
       opacity: 1;
     }
   }
+}
+
+
+@keyframes softblink {
+  0% {
+    background: rgba(255,255,255,0);
+  }
+  50% {
+    background: rgba(255,255,255,0.15);
+  }
+  100% {
+    background: rgba(255,255,255,0);
+  }
+}
+
+.overlay {
+  position: absolute;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  box-shadow: 0 0 3px 5px rgba(0,0,0,0.7) inset;
+  animation: 5s ease-in-out infinite softblink;
 }
 
 .code {
