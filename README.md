@@ -8,9 +8,9 @@ Features
 
 **Kebab-Case Kaamelott Videoboard** provides the following features:
 
-- Fulltext search
-- Feature 2
-- Feature 3
+- Fulltext search (characters, episodes, script and keywords)
+- Large Kaamelott video memes database
+- Sharing (link / embed code)
 - Feature 4
 
 Installation
