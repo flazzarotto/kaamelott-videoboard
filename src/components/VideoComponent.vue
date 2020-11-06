@@ -1,7 +1,7 @@
 <template>
   <div class="video-component">
     <div class="video-container" :style="computedStyle" v-if="!clicked && thumbnail.length">
-      <img :src="thumbnail" :alt="title" @click="clicked = true" />
+      <img :src="thumbnail" :alt="title" @click="clicked = true"/>
       <div class="overlay"></div>
       <div class="click"></div>
     </div>
@@ -10,15 +10,19 @@
       <div v-else v-html="autoplay"></div>
     </div>
     <div class="text">
-      <h2>{{ title }}</h2>
-      <p class="script" v-if="script.length">{{ script }}</p>
-      <p :style="{display: 'none'}">{{ keywords.replace(/,/g, ', ') }}</p>
-      <div class="code">{{ type === 'local' ? `` : src }}</div>
+      <h2 class="info-toggler" @click="openInfos = !openInfos">
+        <em>{{ title }}</em>
+        <span :class="{openInfos}">▼</span>
+      </h2>
+      <p v-show="openInfos" class="script" v-if="script.length">{{ script }}</p>
+      <p v-show="openInfos && false">{{ keywords.replace(/,/g, ', ') }}</p>
+      <div v-show="openInfos" class="code">{{ type === 'local' ? `` : src }}</div>
     </div>
   </div>
 </template>
 
 <script>
+
 
 export default {
   name: "VideoComponent",
@@ -58,6 +62,7 @@ export default {
   },
   data() {
     return {
+      openInfos: false,
       basicStyle: {
         position: 'relative',
         height: '0',
@@ -73,9 +78,7 @@ export default {
     },
 
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
@@ -83,13 +86,16 @@ export default {
 .video-component {
   margin: 0 7.5px 15px;
   width: 320px;
-  background: rgba(0, 0, 0, .1);
+  background: rgba(255, 255, 255, .3);
+  border: 1px solid white;
   padding-bottom: 7.5px;
   display: flex;
   flex-direction: column;
 
   h2 {
     font-size: 1.1rem;
+    padding: 7.5px 0 0;
+    margin: 0;
   }
 
   .text {
@@ -100,6 +106,7 @@ export default {
     flex-direction: column;
     height: 100%;
     justify-content: space-between;
+
     .script {
       white-space: pre-line;
     }
@@ -108,6 +115,7 @@ export default {
 
 .video-container {
   overflow: hidden;
+
   video, iframe {
     width: 100%;
     height: 100%;
@@ -116,9 +124,11 @@ export default {
     top: 0;
     border: none;
   }
+
   img {
     width: 100%;
   }
+
   img, .click {
     position: absolute;
     left: 50%;
@@ -129,7 +139,7 @@ export default {
 
   .click {
     $play-btn-color: #888;
-    $play-btn-bgcolor: rgba(255,255,255,.8);
+    $play-btn-bgcolor: rgba(255, 255, 255, .8);
     $play-btn-size: 3rem;
     pointer-events: none;
     border: 3px solid $play-btn-color;
@@ -146,6 +156,7 @@ export default {
         opacity: 1;
       }
     }
+
     &:after {
       content: '▶';
       color: $play-btn-color;
@@ -164,13 +175,13 @@ export default {
 
 @keyframes softblink {
   0% {
-    background: rgba(255,255,255,0);
+    background: rgba(0, 0, 0, 0.15);
   }
   50% {
-    background: rgba(255,255,255,0.15);
+    background: rgba(0, 0, 0, 0);
   }
   100% {
-    background: rgba(255,255,255,0);
+    background: rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -181,8 +192,9 @@ export default {
   height: 100%;
   left: 0;
   top: 0;
-  box-shadow: 0 0 3px 5px rgba(0,0,0,0.7) inset;
-  animation: 5s ease-in-out infinite softblink;
+  box-shadow: 0 0 3px 5px rgba(0, 0, 0, 0.7) inset;
+  animation: 3s ease-in-out infinite softblink;
+  z-index: 10;
 }
 
 .code {
@@ -195,4 +207,23 @@ export default {
   max-height: 75px;
   overflow-y: auto;
 }
+
+.info-toggler {
+  cursor: pointer;
+  em {
+    font-style: normal;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+  span {
+    transform-origin: 50% 50%;
+    display: inline-block;
+    vertical-align: middle;
+
+    &.openInfos {
+      transform: rotate(180deg);
+    }
+  }
+}
+
 </style>

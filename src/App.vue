@@ -1,6 +1,6 @@
 <template>
   <h1>
-    <img :src="Perceval" alt="Perceval" />
+    <figure><img :src="Perceval" alt="Perceval"/></figure>
     {{ title }}
   </h1>
   <SearchBar></SearchBar>
@@ -30,17 +30,28 @@ export default {
 </script>
 
 <style lang="scss">
-:root, body {
-  padding: 0;
-  margin: 0;
-}
+@import 'assets/scss/global';
 
-h1, h1 img {
-  vertical-align: middle;
-}
+h1 {
+  &, figure {
+    vertical-align: middle;
+  }
 
-* {
-  box-sizing: border-box;
+  figure {
+    overflow: hidden;
+    border-radius: 100px;
+
+    &:after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+      box-shadow: -3px 3px 10px 3px black inset;
+    }
+  }
 }
 
 #app {
@@ -49,8 +60,14 @@ h1, h1 img {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin: 30px auto 0;
-  padding: 0 15px;
+  margin: auto;
+  padding: 30px 15px 15px;
+  background: linear-gradient(0deg, rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+  url('assets/kaamelott.jpg') no-repeat center fixed;
+  background-size: cover;
+  position: absolute;
+  width: 100%;
+  min-height: 100%;
 }
 
 #videos {

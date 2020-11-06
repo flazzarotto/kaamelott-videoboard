@@ -20,7 +20,7 @@ VideoManager
         'La femelle lièvre c\'est la haze',
         'L1T1E01 Heat',
         [bohort, karadoc],
-        `- La femelle lièvre c'est la haze
+        `- La femelle lièvre c'est la hase
         - Non moi j'connais qu'le cri`,
         embedParameters
     )
