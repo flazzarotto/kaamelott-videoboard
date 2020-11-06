@@ -1,9 +1,18 @@
 const qs = require('qs')
 
-const TypeFactory = function (matches, getEmbedUri) {
+const TypeFactory = function (matches, getEmbedUri, getThumbnail) {
     return {
         matches,
-        getEmbedUri
+        getEmbedUri,
+        getThumbnail
+    }
+}
+
+
+const youtubeEmbed = 'https://www.youtube.com/embed/'
+const youtubeThumbnail = function() {
+    return function(videoId) {
+        return `http://img.youtube.com/vi/${videoId}/default.jpg`
     }
 }
 
@@ -13,16 +22,21 @@ const VideoManager = {
             function (parsedUri) {
                 return parsedUri.domain === 'youtube.com'
             },
-            function (parsedUri) {
-                return 'https://www.youtube.com/embed/' + parsedUri.query['v']
-            }),
+            function (parsedUri, obj = {}) {
+                obj.videoId = parsedUri.query['v']
+                return youtubeEmbed + obj.videoId
+            },
+            youtubeThumbnail()
+            ),
         "youtu.be": TypeFactory(
             function (parsedUri) {
                 return parsedUri.domain === 'youtu.be'
             },
-            function (parsedUri) {
-                return 'https://www.youtube.com/embed/' + parsedUri.file
-            }),
+            function (parsedUri, obj = {}) {
+                obj.videoId = parsedUri.file
+                return youtubeEmbed + obj.videoId
+            },
+            youtubeThumbnail()),
     },
     videos: [],
     toJSON() {
@@ -35,11 +49,11 @@ const VideoManager = {
      * @param script script of the video
      * @param embedParameters list of html parameters for iframe
      */
-    addVideo(link, title, keywords = '', script = '', embedParameters = {}) {
+    addVideo(link, title, keywords = '', characters = [], script = '', embedParameters = {}) {
         const params = {width: 720, height: 405, allowfullscreen: true,...embedParameters}
-        keywords = [keywords, title, script].join(',').replace(/[ ,;.-]+/g, ',').replace(/,$/,'')
+        keywords = [keywords, title, characters.join(','), script].join(',').replace(/[ ,;.]+/g, ',').replace(/,$/,'')
         this.videos.push(
-            {...this.getEmbedCode(link, params), title, keywords, script}
+            {...this.getEmbedCode(link, params), title, keywords, script, characters}
         )
         return this
     },
@@ -87,11 +101,12 @@ const VideoManager = {
 
         let embedUri = false
         let currentType = false
+        let parsedObj = {}
 
         for (let typeName in this.supportedTypes) {
             let type = this.supportedTypes[typeName]
             if (type.matches(parsed)) {
-                embedUri = type.getEmbedUri(parsed)
+                embedUri = type.getEmbedUri(parsed, parsedObj)
                 currentType = typeName
                 break
             }
@@ -110,7 +125,9 @@ const VideoManager = {
         }
 
         return {
-            type: currentType, embedCode: `<iframe ${props.join(' ')}></iframe>`
+            type: currentType,
+            embedCode: `<iframe ${props.join(' ')}></iframe>`,
+            thumbnail: this.supportedTypes[currentType].getThumbnail(parsedObj.videoId)
         }
     }
 }

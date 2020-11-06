@@ -1,12 +1,15 @@
 <template>
-  <div class="video-component" v-show="isVisible">
-    <div class="video-container" :style="computedStyle">
+  <div class="video-component">
+    <div class="video-container" :style="computedStyle" v-if="!clicked && thumbnail.length">
+      <img :src="thumbnail" :alt="title" @click="clicked = true" />
+    </div>
+    <div class="video-container" :style="computedStyle" v-else>
       <video v-if="type === 'local'" :src="src"/>
       <div v-else v-html="src"></div>
     </div>
     <div class="text">
       <h2>{{ title }}</h2>
-      <p v-if="script.length">{{ script }}</p>
+      <p class="script" v-if="script.length">{{ script }}</p>
       <p :style="{display: 'none'}">{{ keywords.replace(/,/g, ', ') }}</p>
       <div class="code">{{ type === 'local' ? `` : src }}</div>
     </div>
@@ -14,8 +17,6 @@
 </template>
 
 <script>
-import {useState} from "@/store/store"
-import FullTextSearch from '@/lib/FullTextSearch'
 
 export default {
   name: "VideoComponent",
@@ -44,6 +45,10 @@ export default {
     ratio: {
       type: Number,
       default: 0.5625
+    },
+    thumbnail: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -54,30 +59,17 @@ export default {
         width: '100%',
         'padding-bottom': (this.ratio * 100) + '%'
       },
-      visibility: null
+      clicked: false
     }
   },
   computed: {
     computedStyle() {
       return {...this.basicStyle, ...this.style}
     },
-    // TODO we should do this on the videos object.......
-    isVisible() {
-      this.setVisibility(this.state.search)
-      return this.visibility
-    }
+
   },
   methods: {
-    // TODO we should do this on the videos object.......
-    setVisibility(search) {
-      this.visibility = (search.length >= 3)
-          // TODO we should do this on the videos object.......
-          ? (FullTextSearch.search(this.keywords.split(','), search).length > 0)
-          : ((this.visibility === null || search.length === 0) ? (this.index < 10) : this.visibility)
-    }
-  },
-  setup() {
-    return {state: useState()}
+
   }
 }
 </script>
@@ -88,6 +80,8 @@ export default {
   width: 320px;
   background: rgba(0, 0, 0, .1);
   padding-bottom: 7.5px;
+  display: flex;
+  flex-direction: column;
 
   h2 {
     font-size: 1.1rem;
@@ -97,10 +91,18 @@ export default {
     word-wrap: break-word;
     max-width: 80%;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    .script {
+      white-space: pre-line;
+    }
   }
 }
 
 .video-container {
+  overflow: hidden;
   video, iframe {
     width: 100%;
     height: 100%;
@@ -108,6 +110,13 @@ export default {
     left: 0;
     top: 0;
     border: none;
+  }
+  img {
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
   }
 }
 
@@ -118,5 +127,7 @@ export default {
   -moz-user-select: all;
   font-family: monospace;
   font-size: 0.8rem;
+  max-height: 75px;
+  overflow-y: auto;
 }
 </style>

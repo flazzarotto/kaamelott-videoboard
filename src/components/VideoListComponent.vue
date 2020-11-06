@@ -1,13 +1,16 @@
 <template>
   <div id="videolist">
     <VideoComponent v-for="(v,k) in videos" :type="v.type" :key="k" :index="k" :title="v.title"
-                    :script="v.script" :keywords="v.keywords" :src="v.embedCode"></VideoComponent>
+                    :script="v.script" :keywords="v.keywords" :src="v.embedCode"
+                    :thumbnail="v.thumbnail"></VideoComponent>
+    <div v-if="!videos.length">No result for your search</div>
   </div>
 </template>
 
 <script>
 import VideoComponent from "@/components/VideoComponent"
 import {useState} from "@/store/store"
+import fullTextSearch from '@/lib/FullTextSearch'
 
 export default {
   name: 'VideoListComponent',
@@ -15,11 +18,27 @@ export default {
   props: {},
   data() {
     return {
-      videos: this.state.videos
+      lastVideos: this.state.videos.slice(0, 20)
     }
   },
-  computed: {},
-  methods: {},
+  computed: {
+    videos() {
+      if (this.state.search.length < 3) {
+        if (!this.state.search.length) {
+          return this.setLastVideos(this.state.videos.slice(0, 20))
+        }
+        return this.lastVideos
+      }
+      const videos = fullTextSearch.search(this.state.search, this.state.videos).slice(0, 30)
+      return this.setLastVideos(videos)
+    }
+  },
+  methods: {
+    setLastVideos(videos) {
+      this.lastVideos = videos
+      return this.lastVideos
+    }
+  },
   setup() {
     return {state: useState()}
   }
@@ -27,8 +46,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  #videolist {
-    display: flex;
-    flex-wrap: wrap;
-  }
+#videolist {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>

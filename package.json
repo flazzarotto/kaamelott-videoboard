@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "full-text-search": "^0.0.16",
+    "slugify": "^1.4.6",
     "vue": "^3.0.0"
   },
   "devDependencies": {

@@ -1,5 +1,8 @@
 <template>
-  <h1>{{ title }}</h1>
+  <h1>
+    <img :src="Perceval" alt="Perceval" />
+    {{ title }}
+  </h1>
   <SearchBar></SearchBar>
   <section id="videos">
     <VideoListComponent></VideoListComponent>
@@ -7,8 +10,9 @@
 </template>
 
 <script>
-import VideoListComponent from "@/components/VideoListComponent";
-import SearchBar from "@/components/SearchBar";
+import VideoListComponent from "@/components/VideoListComponent"
+import SearchBar from "@/components/SearchBar"
+import Perceval from '@/assets/perceval.png'
 
 export default {
   name: 'App',
@@ -18,7 +22,8 @@ export default {
   },
   data() {
     return {
-      title: 'Kaamelott Videoboard'
+      title: 'Kaamelott Videoboard',
+      Perceval
     }
   }
 }
@@ -28,6 +33,10 @@ export default {
 :root, body {
   padding: 0;
   margin: 0;
+}
+
+h1, h1 img {
+  vertical-align: middle;
 }
 
 * {
@@ -41,6 +50,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin: 30px auto 0;
+  padding: 0 15px;
 }
 
 #videos {
