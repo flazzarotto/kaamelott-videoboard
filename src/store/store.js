@@ -1,8 +1,9 @@
 import { reactive, provide, inject } from 'vue'
-import videos from './videos'
+import VideoManager from './videos'
 
 const state = {
-    videos,
+    videos: VideoManager.videos,
+    episodes: VideoManager.episodes,
     search: '',
     changeSearch(newSearch) {
         this.search = newSearch
