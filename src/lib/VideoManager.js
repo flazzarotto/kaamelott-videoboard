@@ -53,6 +53,7 @@ const VideoManager = {
         return JSON.stringify(this.videos)
     },
     /**
+     * @param id
      * @param link link to the video
      * @param title title of the video
      * @param keywords list of comma-separated keywords (title and script will already be in the keywords)
@@ -60,26 +61,25 @@ const VideoManager = {
      * @param script script of the video
      * @param episode
      * @param embedParameters list of html parameters for iframe
+     * @return Object video representation
      */
-    addVideo(link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
+    addVideo(id, link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
         link = link.replace(/(\s+)|(\s+$)/g, '')
         const params = {width: 720, height: 405, allowfullscreen: true, ...embedParameters}
         keywords = [episode, keywords, title, characters.join(','), script].join(',')
             .replace(/[ ,;.]+/g, ',').replace(/,$/, '')
-        this.videos.push(
-            {
-                ...this.getEmbedCode(link, params),
-                title,
-                keywords: lcSlug(keywords),
-                script,
-                characters,
-                episode: episode.split(' ', 1)[0],
-                setScore(score) {
-                    this.score = score
-                }
-            }
-        )
-        return this
+        let v = {
+            id,
+            link,
+            ...this.getEmbedCode(link, params),
+            title,
+            keywords: lcSlug(keywords),
+            script,
+            characters,
+            episode: episode.split(' ', 1)[0]
+        }
+        this.videos.push(v)
+        return v
     },
     addEpisode(episodeStr) {
         const nested = episodeStr.match(/^(L[0-9])(T[0-9])(E[0-9]+)\s(.*)$/)

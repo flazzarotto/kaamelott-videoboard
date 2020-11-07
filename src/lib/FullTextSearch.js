@@ -18,9 +18,9 @@ export default {
             }
         )
 
-        workingSet.map(x => x.score = (searchText.length > 3) ? 0 : 1)
+        workingSet.map(x => x.score = (searchText.length >= 3) ? 0 : 1)
 
-        if (searchText.length > 3) {
+        if (searchText.length >= 3) {
             searchText = lcSlug(searchText)
             const maxScore = searchText.length
             workingSet.map(

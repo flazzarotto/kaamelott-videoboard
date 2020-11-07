@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'assets/scss/global';
+@import '~@/assets/scss/global';
 
 h1 {
   &, figure {
@@ -68,6 +68,7 @@ h1 {
   position: absolute;
   width: 100%;
   min-height: 100%;
+  overflow: hidden;
 }
 
 #videos {

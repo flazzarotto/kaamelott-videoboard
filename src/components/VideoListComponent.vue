@@ -1,14 +1,8 @@
 <template>
   <div id="videolist">
-    <VideoComponent v-for="(v,k) in videos" :type="v.type" :key="k" :index="k" :title="v.title"
-                    :script="v.script" :keywords="v.keywords" :src="v.embedCode" :autoplay="v.autoplay"
-                    :thumbnail="v.thumbnail"></VideoComponent>
+    <VideoComponent v-for="(v,k) in videos" :key="k" v-bind="v"></VideoComponent>
     <div v-if="!videos.length">No result for your search</div>
-    <div v-if="videos.length" class="empty"></div>
-    <div v-if="videos.length" class="empty"></div>
-    <div v-if="videos.length" class="empty"></div>
-    <div v-if="videos.length" class="empty"></div>
-    <div v-if="videos.length" class="empty"></div>
+    <div v-for="k in (new Array(5))" :key="k" class="empty"></div>
   </div>
 </template>
 
@@ -59,7 +53,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/scss/variable";
+@import "~@/assets/scss/variable";
 #videolist {
   display: flex;
   flex-wrap: wrap;
