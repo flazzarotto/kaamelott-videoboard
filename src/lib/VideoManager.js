@@ -64,7 +64,7 @@ const VideoManager = {
     addVideo(link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
         link = link.replace(/(\s+)|(\s+$)/g, '')
         const params = {width: 720, height: 405, allowfullscreen: true, ...embedParameters}
-        keywords = [keywords, title, characters.join(','), script].join(',')
+        keywords = [episode, keywords, title, characters.join(','), script].join(',')
             .replace(/[ ,;.]+/g, ',').replace(/,$/, '')
         this.videos.push(
             {
