@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import {stateSymbol, createState} from "@/store/store"
+import {storeSymbol, createStore} from "@/store/store"
 
 const app = createApp(App)
-app.provide(stateSymbol, createState())
+app.provide(storeSymbol, createStore())
 app.mount('#app')

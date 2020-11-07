@@ -11,16 +11,29 @@ const characters = {
     karadoc: 'Karadoc',
     perceval: 'Perceval',
     leodagan: 'Léodagan',
-    arthur: 'Arthur'
+    arthur: 'Arthur',
+    seli: 'Dame Séli',
+    guenievre: 'Guenièvre'
 }
 
 const header = csvData[0]
 
 for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
     const line = csvData[lineNumber]
+
     const data = Object.assign(...header.map((k, i) => ({[k]: line[i]})))
 
-    data.characters = data.characters.replace(/\s+/,'').split(',').filter(x => characters[x])
+    if (!data.characters) {
+        continue
+    }
+
+    const chars = data.characters.replace(/\s+/g,'').split(',')
+
+    data.characters = chars.filter(x => characters[x])
+
+    if (data.characters.length !== chars.length ) {
+        console.error(`At least one unknown character in group '${chars.join(', ')}' for video '${data.title}'.`)
+    }
 
     VideoManager.addEpisode(data.episode)
 

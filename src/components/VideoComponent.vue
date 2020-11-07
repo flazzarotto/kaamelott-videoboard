@@ -1,7 +1,7 @@
 <template>
   <div class="video-component">
-    <div class="video-container" :style="computedStyle" v-if="!clicked && thumbnail.length">
-      <img :src="thumbnail" :alt="title" @click="clicked = true"/>
+    <div class="video-container" :style="computedStyle" v-if="!currentVideo && thumbnail.length">
+      <img :src="thumbnail" :alt="title" @click="setCurrentVideo()"/>
       <div class="overlay"></div>
       <div class="click"></div>
     </div>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-
+import {useStore} from "@/store/store";
 
 export default {
   name: "VideoComponent",
@@ -76,9 +76,18 @@ export default {
     computedStyle() {
       return {...this.basicStyle, ...this.style}
     },
-
+    currentVideo() {
+      return this.store.state.currentVideo === this.src
+    }
   },
-  methods: {}
+  methods: {
+    setCurrentVideo() {
+      this.store.setCurrentVideo(this.src)
+    }
+  },
+  setup() {
+    return {store: useStore()}
+  }
 }
 </script>
 

@@ -14,27 +14,35 @@
 
 <script>
 import VideoComponent from "@/components/VideoComponent"
-import {useState} from "@/store/store"
+import {useStore} from "@/store/store"
 import fullTextSearch from '@/lib/FullTextSearch'
 
 export default {
   name: 'VideoListComponent',
   components: {VideoComponent},
-  props: {},
+  props: {
+    maxVideo: {
+      type: Number,
+      default: 30
+    }
+  },
   data() {
     return {
-      lastVideos: this.state.videos.slice(0, 20)
+      lastVideos: this.store.state.videos.slice(0, 20)
     }
   },
   computed: {
     videos() {
-      if (this.state.search.length < 3) {
-        if (!this.state.search.length) {
-          return this.setLastVideos(this.state.videos.slice(0, 20))
+      if (this.store.state.search.length < 3 && !this.store.state.findEpisodes) {
+        if (!this.store.state.search.length && !this.store.state.findEpisodes) {
+          return this.setLastVideos(this.store.state.videos.slice(0, this.maxVideo))
         }
         return this.lastVideos
       }
-      const videos = fullTextSearch.search(this.state.search, this.state.videos).slice(0, 30)
+      const videos = fullTextSearch.search(
+          this.store.state.search,
+          this.store.state.videos,
+          this.store.state.findEpisodes).slice(0, this.maxVideo)
       return this.setLastVideos(videos)
     }
   },
@@ -45,7 +53,7 @@ export default {
     }
   },
   setup() {
-    return {state: useState()}
+    return {store: useStore()}
   }
 }
 </script>

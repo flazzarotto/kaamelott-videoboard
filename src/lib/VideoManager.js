@@ -1,3 +1,5 @@
+import {lcSlug} from "@/lib/FullTextSearch";
+
 const qs = require('qs')
 
 const TypeFactory = function (matches, getEmbedUri, getThumbnail) {
@@ -10,13 +12,13 @@ const TypeFactory = function (matches, getEmbedUri, getThumbnail) {
 
 
 const youtubeEmbed = 'https://www.youtube.com/embed/'
-const youtubeThumbnail = function() {
-    return function(videoId) {
+const youtubeThumbnail = function () {
+    return function (videoId) {
         return `http://img.youtube.com/vi/${videoId}/default.jpg`
     }
 }
-const youtubeAutoplay = function(embed) {
-    return embed + (embed => (embed.indexOf('?')>-1)?'&':'?')(embed) + 'autoplay=1'
+const youtubeAutoplay = function (embed) {
+    return embed + (embed => (embed.indexOf('?') > -1) ? '&' : '?')(embed) + 'autoplay=1'
 }
 
 const VideoManager = {
@@ -32,7 +34,7 @@ const VideoManager = {
                 return embed
             },
             youtubeThumbnail()
-            ),
+        ),
         "youtu.be": TypeFactory(
             function (parsedUri) {
                 return parsedUri.domain === 'youtu.be'
@@ -60,17 +62,29 @@ const VideoManager = {
      * @param embedParameters list of html parameters for iframe
      */
     addVideo(link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
-        const params = {width: 720, height: 405, allowfullscreen: true,...embedParameters}
-        keywords = [keywords, title, episode, characters.join(','), script].join(',').replace(/[ ,;.]+/g, ',').replace(/,$/,'')
+        link = link.replace(/(\s+)|(\s+$)/g, '')
+        const params = {width: 720, height: 405, allowfullscreen: true, ...embedParameters}
+        keywords = [keywords, title, characters.join(','), script].join(',')
+            .replace(/[ ,;.]+/g, ',').replace(/,$/, '')
         this.videos.push(
-            {...this.getEmbedCode(link, params), title, keywords, script, characters, episode: episode.split(' ',1)}
+            {
+                ...this.getEmbedCode(link, params),
+                title,
+                keywords: lcSlug(keywords),
+                script,
+                characters,
+                episode: episode.split(' ', 1)[0],
+                setScore(score) {
+                    this.score = score
+                }
+            }
         )
         return this
     },
     addEpisode(episodeStr) {
         const nested = episodeStr.match(/^(L[0-9])(T[0-9])(E[0-9]+)\s(.*)$/)
         let upper = this.episodes
-        for (let i = 1; i<nested.length;i++) {
+        for (let i = 1; i < nested.length; i++) {
             if (!upper[nested[i]]) {
                 upper[nested[i]] = {}
             }
@@ -83,6 +97,7 @@ const VideoManager = {
     },
     uriMatcher(string) {
         const matches = string.match(/^https?:\/\/((?:[a-z0-9\-_]+\.)+)([a-z0-9\-_]+)\/((?:[a-z0-9\-_%.]+\/)?)([a-z0-9\-_%.]+\/?)((?:\?.+)?)((?:#.*)?)$/i)
+
         matches[1] = matches[1].replace(/\.$/, '')
 
         return {

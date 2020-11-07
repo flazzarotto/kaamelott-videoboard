@@ -2,7 +2,7 @@
   <nav>
     <div>
       <input type="text" v-model="search" @input="updateSearch()" placeholder="Recherche..."/>
-      <button :class="{show: search.length}" @click="search = ''; updateSearch()">
+      <button :class="{show: search.length || selectedBook}" @click="raz()">
         <span>Tout cramer et reprendre à zéro</span>
         <img :src="leodagan" alt="Réinitialiser"/>
       </button>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import {useState} from "@/store/store"
+import {useStore} from "@/store/store"
 import leodagan from '@/assets/leodagan.gif'
 
 export default {
@@ -42,12 +42,18 @@ export default {
       selectedBook: null,
       selectedTome: null,
       selectedEpisode: null,
-      search: this.state.search,
-      episodes: this.state.episodes,
+      search: this.store.state.search,
+      episodes: this.store.state.episodes,
       leodagan
     }
   },
   methods: {
+    raz() {
+      this.search = ''
+      this.selectedEpisode = this.selectedTome = this.selectedBook = null
+      this.updateSearch()
+      this.updateEpisode()
+    },
     updateEpisode() {
       if (this.selectedBook === null) {
         this.selectedTome = null
@@ -55,10 +61,10 @@ export default {
       if (this.selectedTome === null) {
         this.selectedEpisode = null
       }
-      // TODO
+      this.store.changeEpisodes(this.selectedBook, this.selectedTome, this.selectedEpisode)
     },
     updateSearch() {
-      this.state.changeSearch(this.search)
+      this.store.changeSearch(this.search)
     },
     trans(string) {
       switch (string.charAt(0)) {
@@ -74,12 +80,21 @@ export default {
     }
   },
   setup() {
-    return {state: useState()}
+    return {store: useStore()}
   }
 }
 </script>
 
 <style scoped lang="scss">
+select, input, button {
+  font-size: 1.5rem;
+  width: 80%;
+}
+
+select {
+  width: auto;
+}
+
 nav {
   display: flex;
   flex-direction: column;
@@ -89,13 +104,27 @@ nav {
     display: flex;
     justify-content: left;
     width: 100%;
-  }
-}
 
-select, input, button {
-  border-radius: 0;
-  font-size: 1.5rem;
-  width: 80%;
+    & + div {
+      padding-top: 15px;
+      width: 800px;
+      justify-content: space-between;
+      select + select {
+        margin-left: 5px;
+      }
+      @media screen and (max-width: 600px) {
+        flex-direction: column;
+        width: 100%;
+        select {
+          display: block;
+          & + select {
+            margin-left: 0;
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+  }
 }
 
 button {
