@@ -40,7 +40,6 @@ export default {
                         let done = false
                         let scoreModifier = 1
                         do {
-                            console.log(x.keywords,word,scoreModifier)
                             let found = x.keywords.indexOf(word) > -1
                             x.score += scoreModifier * (found ? 1 : -2/word.length) * (word.length / (.5 * searchText.length + .5 * x.keywords.length))
                             if (!found && word.length > 4) {
@@ -48,7 +47,6 @@ export default {
                                 scoreModifier *= (1 - 1/word.length)
                                 continue
                             }
-                            console.log(x.keywords, x.score)
                             done = true
                         }
                         while (!done)

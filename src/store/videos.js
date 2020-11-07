@@ -13,7 +13,14 @@ const characters = {
     leodagan: 'Léodagan',
     arthur: 'Arthur',
     seli: 'Dame Séli',
-    guenievre: 'Guenièvre'
+    guenievre: 'Guenièvre',
+    breccan: 'Breccan',
+    grudu: 'Grüdü',
+    demetra: 'Demetra',
+    lancelot: 'Lancelot du Lac',
+    attila: 'Attila le Hun',
+    damedulac: 'La Dame du Lac',
+    barde: 'Buzit le barde'
 }
 
 const header = csvData[0]
