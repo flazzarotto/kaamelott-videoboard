@@ -14,7 +14,7 @@ const TypeFactory = function (matches, getEmbedUri, getThumbnail) {
 const youtubeEmbed = 'https://www.youtube.com/embed/'
 const youtubeThumbnail = function () {
     return function (videoId) {
-        return `http://img.youtube.com/vi/${videoId}/default.jpg`
+        return `https://img.youtube.com/vi/${videoId}/default.jpg`
     }
 }
 const youtubeAutoplay = function (embed) {
