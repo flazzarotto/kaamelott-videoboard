@@ -97,7 +97,8 @@ export default {
   },
   computed: {
     href() {
-      return routePrefixer + videoDetailRoute.path.replace(':video', this.id)
+      return window.location.origin +
+      routePrefixer + videoDetailRoute.path.replace(':video', this.id)
     },
     computedStyle() {
       return {...this.basicStyle, ...this.style}
