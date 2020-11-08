@@ -24,7 +24,6 @@
         <p class="characters">{{ characters.join(', ') }}</p>
         <p class="script" v-if="script.length" v-html="scriptWithStageDirections"></p>
         <p v-show="false">{{ keywords.replace(/,/g, ', ') }}</p>
-        <div class="code">{{ type === 'local' ? `` : src }}</div>
       </div>
     </div>
   </div>
@@ -170,7 +169,7 @@ export default {
     height: 100%;
     justify-content: flex-start;
     font-size: 0.9rem;
-    padding: 7.5px 7.5px 0;
+    padding: 7.5px 7.5px 15px;
     .script {
       text-align: left;
       white-space: pre-line;
@@ -302,17 +301,6 @@ export default {
   z-index: 10;
 }
 
-.code {
-  word-break: break-all;
-  border: 1px solid #888;
-  user-select: all;
-  -moz-user-select: all;
-  font-family: monospace;
-  font-size: 0.6rem;
-  max-height: 75px;
-  overflow-y: auto;
-}
-
 .info-toggler {
   cursor: pointer;
 
@@ -340,7 +328,7 @@ export default {
 #copy-links {
   position: absolute;
   right: 0;
-  top: 0;
+  bottom: 0;
   padding: 5px;
   z-index: 12;
   a {
