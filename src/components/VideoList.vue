@@ -27,6 +27,7 @@ export default {
     }
   },
   computed: {
+    // return video list according to search params
     videos() {
       const search = this.store.state.search.fullText
       const findEpisodes = this.store.state.search.findEpisodes
@@ -41,12 +42,13 @@ export default {
       const videos = fullTextSearch.search(
           search,
           this.store.state.videos,
-          findEpisodes).slice(0, this.maxVideo)
+          {episode: findEpisodes}).slice(0, this.maxVideo)
       return this.setLastVideos(videos)
     }
   },
   methods: {
     trans,
+    // keep in mind last videos founded (used when no pertinent search)
     setLastVideos(videos) {
       this.lastVideos = videos
       return this.lastVideos

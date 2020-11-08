@@ -1,3 +1,7 @@
+/**
+ * Extracts meta from route
+ * @param route
+ */
 export function getSeoDataFromRoute(route) {
     const metas = {}
     for (let meta in route.metas) {
@@ -8,6 +12,15 @@ export function getSeoDataFromRoute(route) {
     setSeoData(metas)
 }
 
+/**
+ * Set metas for current page
+ * @param title
+ * @param description
+ * @param og_title
+ * @param og_description
+ * @param og_image
+ * @param og_video
+ */
 function setSeoData({
                         title = null,
                         'meta.description': description = '',
@@ -32,14 +45,16 @@ function setSeoData({
 
         let tag, name = null
 
+        // meta tag
         if (type[0] === 'meta') {
             tagName = 'meta'
             name = type[1]
-            tag = document.querySelector(tagName + '[name="' + name + '"]')
-        } else {
-            tag = document.querySelector(tagName)
+            tag = document.querySelector('head > ' + tagName + '[name="' + name + '"]')
+        } else { // other tag - <title>
+            tag = document.querySelector('head > ' + tagName)
         }
 
+        // remove tag if null
         if (!metaValue) {
             if (tag) {
                 tag.parentElement.removeChild(tag)
@@ -49,6 +64,7 @@ function setSeoData({
 
         metaValue = metaValue.replace(/\s+/g, ' ')
 
+        // create and add tag to <head> if not present
         if (!tag) {
             tag = document.createElement(tagName)
             if (name) {
@@ -57,10 +73,12 @@ function setSeoData({
             document.querySelector('head').append(tag)
         }
 
+        // set meta tag content
         if (name) {
             tag.setAttribute('content', metaValue)
             continue
         }
+        // set other tag content
         tag.textContent = metaValue
     }
 }

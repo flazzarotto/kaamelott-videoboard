@@ -36,28 +36,35 @@
 
 <script>
 import {useStore} from "@/store/store"
-import leodagan from '@/assets/leodagan.gif'
+import Leodagan from '@/assets/leodagan.gif'
 import {paramsCalculator} from "@/router/paramsCalculator";
 import {trans} from "@/lib/functions/trans";
+import {episodeParser} from "@/lib/functions/episodeParser";
 
 export default {
   name: "SearchBar",
   data() {
     return {
-      selectedBook: null,
-      selectedTome: null,
-      selectedEpisode: null,
+      selectedBook: episodeParser(this.store.state.search.findEpisodes)[0],
+      selectedTome: episodeParser(this.store.state.search.findEpisodes)[1],
+      selectedEpisode: episodeParser(this.store.state.search.findEpisodes)[2],
       search: this.store.state.search.fullText,
       episodes: this.store.state.episodes,
-      leodagan
+      leodagan: Leodagan
     }
   },
+  computed: {
+  },
   methods: {
+    // reset form
     raz() {
+      this.selectedBook = null
+      this.selectedTome = null
+      this.selectedEpisode = null
       this.search = ''
-      this.selectedEpisode = this.selectedTome = this.selectedBook = null
       this.$router.push({query: {}})
     },
+    // search for book / tome / episode number
     updateEpisode() {
       if (this.selectedBook === null) {
         this.selectedTome = null
@@ -70,6 +77,7 @@ export default {
 
       this.$router.push({query: paramsCalculator(this.$route.query, {findEpisodes})})
     },
+    // fulltext search
     updateSearch() {
       this.$router.push({query: paramsCalculator(this.$route.query, {fullText: this.search})})
     },

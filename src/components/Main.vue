@@ -5,7 +5,7 @@
       <VideoListComponent></VideoListComponent>
     </section>
     <router-link :to="{name: 'about'}" class="link">
-      {{ trans('title:about', {item: trans('app_title')}) }}
+      {{ trans('app_about_title') }}
     </router-link>
   </section>
 </template>

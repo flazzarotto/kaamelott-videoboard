@@ -6,6 +6,7 @@ import {getSeoDataFromRoute} from "@/lib/functions/setSeoDataFromRoute";
 const store = createStore()
 
 export default {
+    // executed before each routing
     beforeEach: ({router}) => function (to, from, next) {
 
         switch (to.name) {

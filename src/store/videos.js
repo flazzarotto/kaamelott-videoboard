@@ -1,36 +1,30 @@
-import VideoManager from "@/lib/VideoManager"
+import VideoManager from "@/lib/VideoManager/VideoManager"
 import csvData from '@/data/videos.csv'
-import {hashCode} from "@/lib/functions/hashCode";
+import {youtubeLong, youtubeShort} from "@/lib/VideoManager/adapters/youtube"
+import sha1 from 'sha1'
+// characters stored in json so that we can use small names in CSV
+import characters from '@/data/characters.json'
 
+// register adapters (youtube) to manage video sources
+VideoManager.registerAdapters(youtubeLong, youtubeShort)
+
+// custom embed parameters
 const embedParameters = {
     frameborder: "0",
     allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 }
 
-const characters = {
-    bohort: 'Bohort',
-    karadoc: 'Karadoc',
-    perceval: 'Perceval',
-    leodagan: 'Léodagan',
-    arthur: 'Arthur',
-    seli: 'Dame Séli',
-    guenievre: 'Guenièvre',
-    breccan: 'Breccan',
-    grudu: 'Grüdü',
-    demetra: 'Demetra',
-    lancelot: 'Lancelot du Lac',
-    attila: 'Attila le Hun',
-    damedulac: 'La Dame du Lac',
-    barde: 'Buzit le barde'
-}
-
+// CSV header
 const header = csvData[0]
 
+// reading the CSV line by line
 for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
     const line = csvData[lineNumber]
 
+    // creating key:value using header
     const data = Object.assign(...header.map((k, i) => ({[k]: line[i]})))
 
+    // characters are needed
     if (!data.characters) {
         continue
     }
@@ -43,11 +37,13 @@ for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
         console.error(`At least one unknown character in group '${chars.join(', ')}' for video '${data.title}'.`)
     }
 
+    // adding episode in episode list if not already in
     VideoManager.addEpisode(data.episode)
 
+    // adding video
     VideoManager.addVideo(
         lineNumber,
-        btoa(''+hashCode(data.link)),
+        sha1(data.link),
         data.link,
         data.title,
         data.keywords,
@@ -57,6 +53,7 @@ for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
         embedParameters
     )
 
+    // random sorting for home page
     VideoManager.videos = VideoManager.videos.sort(() => 0.5 - Math.random())
 }
 

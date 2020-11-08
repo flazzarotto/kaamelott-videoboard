@@ -1,54 +1,42 @@
 import {lcSlug} from "@/lib/FullTextSearch";
+import {Adapter} from "@/lib/VideoManager/adapters/Adapter";
 
+// query string parser
 const qs = require('qs')
 
-const TypeFactory = function (matches, getEmbedUri, getThumbnail) {
-    return {
-        matches,
-        getEmbedUri,
-        getThumbnail
-    }
-}
-
-
-const youtubeEmbed = 'https://www.youtube.com/embed/'
-const youtubeThumbnail = function () {
-    return function (videoId) {
-        return `https://img.youtube.com/vi/${videoId}/0.jpg`
-    }
-}
-const youtubeAutoplay = function (embed) {
-    return embed + (embed => (embed.indexOf('?') > -1) ? '&' : '?')(embed) + 'autoplay=1'
-}
-
+/**
+ *
+ * @type {object}
+ */
 const VideoManager = {
-    supportedTypes: {
-        youtube: TypeFactory(
-            function (parsedUri) {
-                return parsedUri.domain === 'youtube.com'
-            },
-            function (parsedUri, obj = {}) {
-                obj.videoId = parsedUri.query['v']
-                const embed = youtubeEmbed + obj.videoId
-                obj.autoplay = youtubeAutoplay(embed)
-                return embed
-            },
-            youtubeThumbnail()
-        ),
-        "youtu.be": TypeFactory(
-            function (parsedUri) {
-                return parsedUri.domain === 'youtu.be'
-            },
-            function (parsedUri, obj = {}) {
-                obj.videoId = parsedUri.file
-                const embed = youtubeEmbed + obj.videoId
-                obj.autoplay = youtubeAutoplay(embed)
-                return embed
-            },
-            youtubeThumbnail()),
-    },
+    /**
+     * registered adapters
+     */
+    supportedTypes: {},
+    /**
+     * list of videos
+     */
     videos: [],
+    /**
+     * list of episodes
+     */
     episodes: {},
+    /**
+     * Register video adapter(s) to manage video sources
+     * @param adapters list of adapters
+     */
+    registerAdapters(...adapters) {
+        for (let adapter of adapters) {
+            if (!(adapter instanceof Adapter)) {
+                continue
+            }
+            this.supportedTypes[adapter.type] = adapter
+        }
+    },
+    /**
+     * Return video list in JSON
+     * @returns {string}
+     */
     toJSON() {
         return JSON.stringify(this.videos)
     },
@@ -65,12 +53,16 @@ const VideoManager = {
      * @return Object video representation
      */
     addVideo(index, id, link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
+        // remove trailing spaces
         link = link.replace(/(\s+)|(\s+$)/g, '')
+        // default embed params
         const params = {width: 720, height: 405, allowfullscreen: true, ...embedParameters}
+        // join all text in keywords field for full text search
         keywords = [episode, keywords, title, characters.join(','), script].join(',')
             .replace(/[ ,;.]+/g, ',').replace(/,$/, '')
+        // get episode number
         let episodeNumber = episode.split(' ', 1)
-        let v = {
+        let video = {
             index,
             id,
             link,
@@ -80,11 +72,15 @@ const VideoManager = {
             script,
             characters,
             episode: episodeNumber,
-            episodeTitle: episode.replace(new RegExp('^'+episodeNumber+'\\s+'), '')
+            episodeTitle: episode.replace(new RegExp('^' + episodeNumber + '\\s+'), '')
         }
-        this.videos.push(v)
-        return v
+        this.videos.push(video)
+        return video
     },
+    /**
+     * Add episode to episode list if not present
+     * @param episodeStr
+     */
     addEpisode(episodeStr) {
         const nested = episodeStr.match(/^(L[0-9])(T[0-9])(E[0-9]+)\s(.*)$/)
         let upper = this.episodes
@@ -99,6 +95,11 @@ const VideoManager = {
             upper = upper[nested[i]]
         }
     },
+    /**
+     * Return parsedUri
+     * @param string
+     * @returns {{subdomains: *, path: *, file: *, domain: string, query: QueryString.ParsedQs, match: *, hash: QueryString.ParsedQs}}
+     */
     uriMatcher(string) {
         const matches = string.match(/^https?:\/\/((?:[a-z0-9\-_]+\.)+)([a-z0-9\-_]+)\/((?:[a-z0-9\-_%.]+\/)?)([a-z0-9\-_%.]+\/?)((?:\?.+)?)((?:#.*)?)$/i)
 
@@ -114,6 +115,7 @@ const VideoManager = {
             hash: qs.parse(matches[6].replace(/^#/, ''))
         }
     },
+    /*
     isIFrame(string) {
         string
         // todo return iframe
@@ -124,11 +126,20 @@ const VideoManager = {
         // todo return local file
         return false
     },
+    */
+    /**
+     * Returns embed code from string (uri)
+     * @param string
+     * @param parameters
+     * @returns {{thumbnail: string, embedCode: string, type: boolean, autoplay: string}}
+     */
     getEmbedCode(string,
                  parameters = {}) {
         let parsed = this.uriMatcher(string)
+        /*
         if (!parsed) {
             // TODO check local file
+
             if (false === this.isLocalFile(parsed.file)) {
                 throw new Error(string + ' should be either link to video either iframe')
             }
@@ -138,11 +149,12 @@ const VideoManager = {
             }
 
         }
-
+        */
         let embedUri = false
         let currentType = false
         let parsedObj = {}
 
+        // check video type using registered adapters
         for (let typeName in this.supportedTypes) {
             let type = this.supportedTypes[typeName]
             if (type.matches(parsed)) {

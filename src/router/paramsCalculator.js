@@ -1,3 +1,9 @@
+/**
+ * Recalculates params and remove empty ones
+ * @param actualQuery
+ * @param newParameters
+ * @returns {*}
+ */
 export function paramsCalculator(actualQuery, newParameters = {}) {
 
     const allParams = {...actualQuery, ...newParameters}

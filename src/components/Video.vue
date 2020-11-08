@@ -34,9 +34,8 @@
 import {useStore} from "@/store/store";
 import {copyToClipboard} from "@/lib/functions/copyToClipboard";
 import {ucFirst} from "@/lib/string";
-import {videoDetailRoute} from "@/router/routes";
-import {routePrefixer} from "@/router/router";
 import {trans} from "@/lib/functions/trans";
+import {routeCalculator} from "@/router/router";
 
 export default {
   name: "VideoComponent",
@@ -97,19 +96,21 @@ export default {
     }
   },
   computed: {
+    // generate absolute link to this video
     href() {
-      return window.location.origin +
-      routePrefixer + videoDetailRoute.path.replace(':video', this.id)
+      return routeCalculator('videoDetail', {video: this.id})
     },
     computedStyle() {
       return {...this.basicStyle, ...this.style}
     },
+    // true if video is currently played OR if where on single video page
     currentVideo() {
       return this.directLink || this.store.state.currentVideo === this.src
     },
     src() {
       return this.embedCode
     },
+    // style for stage directions
     scriptWithStageDirections() {
       return this.script
           .replace(/\[\.\.\.\]/g, '{...}')

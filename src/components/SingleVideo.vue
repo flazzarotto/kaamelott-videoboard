@@ -17,6 +17,7 @@ export default {
   name: "SingleVideo",
   components: {VideoComponent: Video},
   computed: {
+    // find correct video
     video() {
       const videos = this.store.state.videos.filter(x => x.id === this.$route.params.video)
       if (videos.length) {

@@ -39,13 +39,15 @@ const mutations = {
         state.lang = lang
     }
 }
-
+// Symbol used by Vue for the store
 export const storeSymbol = Symbol('store')
 export const createStore = () => {
     return { ...mutations, state: readonly(state) };
 }
 
+// use in component to access store
 export const useStore = () => inject(storeSymbol)
+// not used
 export const provideStore = () => provide(
     storeSymbol,
     createStore()

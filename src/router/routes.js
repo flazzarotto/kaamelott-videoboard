@@ -3,10 +3,13 @@ import SingleVideo from "@/components/SingleVideo"
 import About from "@/components/About";
 import Perceval from '@/assets/perceval.png'
 import {trans} from "@/lib/functions/trans";
+import {episodeParser} from "@/lib/functions/episodeParser";
 
 // Routes must be named (unique) and have a component
+// metas must be inside a `metas` getter and be named like '[tagName](.[name])' and must be arrow functions
+// fetch function have access to store and current route (this.store and this.currentRoute - do not use these properties)
 
-export const home = {
+const home = {
     name: 'home',
     path: '',
     component: Main,
@@ -20,7 +23,7 @@ export const home = {
     }
 }
 
-export const videoDetailRoute = {
+const videoDetailRoute = {
     name: 'videoDetail',
     path: '/video/:video',
     component: SingleVideo,
@@ -34,9 +37,9 @@ export const videoDetailRoute = {
         return {
             title: () => {
                 const video = this.fetch()
-                let episode = /^(L[0-9])(T[0-9])(E[0-9]+)$/g.exec(video.episode)
-                episode = episode.slice(1).map(x => this.trans('episode:'+x.replace(/[0-9]+/,''),
-                    {number: x.replace(/[LTE]/,'')}))
+                let episode = episodeParser(video.episode)
+                    .map(x => this.trans('episode:' + x.replace(/[0-9]+/, ''),
+                        {number: x.replace(/[LTE]/, '')}))
                 episode = [episode.join(' '), video.episodeTitle].join(' : ')
 
                 return this.trans('app_video_title', {
@@ -50,7 +53,7 @@ export const videoDetailRoute = {
     }
 }
 
-export const aboutRoute = {
+const aboutRoute = {
     name: 'about',
     path: '/about',
     component: About,

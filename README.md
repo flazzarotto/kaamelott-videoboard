@@ -3,6 +3,8 @@ Kebab-Case Kaamelott Videoboard
 
 Awesome **Kebab-Case Kaamelott Videoboard** is an awesome videoboard for Kaamelott fans.
 
+Current development version accessible here: https://kaamelott-videoboard.dvpt-laz.fr
+
 Features
 --------
 

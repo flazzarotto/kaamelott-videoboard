@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "csv-loader": "^3.0.3",
+    "sha1": "^1.1.1",
     "slugify": "^1.4.6",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-rc.2"
