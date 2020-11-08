@@ -53,6 +53,7 @@ const VideoManager = {
         return JSON.stringify(this.videos)
     },
     /**
+     * @param index
      * @param id
      * @param link link to the video
      * @param title title of the video
@@ -63,12 +64,13 @@ const VideoManager = {
      * @param embedParameters list of html parameters for iframe
      * @return Object video representation
      */
-    addVideo(id, link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
+    addVideo(index, id, link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
         link = link.replace(/(\s+)|(\s+$)/g, '')
         const params = {width: 720, height: 405, allowfullscreen: true, ...embedParameters}
         keywords = [episode, keywords, title, characters.join(','), script].join(',')
             .replace(/[ ,;.]+/g, ',').replace(/,$/, '')
         let v = {
+            index,
             id,
             link,
             ...this.getEmbedCode(link, params),

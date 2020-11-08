@@ -34,6 +34,7 @@
 <script>
 import {useStore} from "@/store/store"
 import leodagan from '@/assets/leodagan.gif'
+import {paramsCalculator} from "@/router/paramsCalculator";
 
 export default {
   name: "SearchBar",
@@ -42,8 +43,8 @@ export default {
       selectedBook: null,
       selectedTome: null,
       selectedEpisode: null,
-      search: this.store.state.search,
-      episodes: this.store.state.episodes,
+      search: this.store.state.search.fullText,
+      episodes: this.store.state.search.episodes,
       leodagan
     }
   },
@@ -51,8 +52,7 @@ export default {
     raz() {
       this.search = ''
       this.selectedEpisode = this.selectedTome = this.selectedBook = null
-      this.updateSearch()
-      this.updateEpisode()
+      this.$router.push({query: {}})
     },
     updateEpisode() {
       if (this.selectedBook === null) {
@@ -61,10 +61,13 @@ export default {
       if (this.selectedTome === null) {
         this.selectedEpisode = null
       }
-      this.store.changeEpisodes(this.selectedBook, this.selectedTome, this.selectedEpisode)
+
+      let findEpisodes = [this.selectedBook, this.selectedTome, this.selectedEpisode].map(x => x ?? '').join('')
+
+      this.$router.push({query: paramsCalculator(this.$route.query, {findEpisodes})})
     },
     updateSearch() {
-      this.store.changeSearch(this.search)
+      this.$router.push({query: paramsCalculator(this.$route.query, {fullText: this.search})})
     },
     trans(string) {
       switch (string.charAt(0)) {
@@ -109,14 +112,17 @@ nav {
       padding-top: 15px;
       width: 800px;
       justify-content: space-between;
+
       select + select {
         margin-left: 5px;
       }
+
       @media screen and (max-width: 600px) {
         flex-direction: column;
         width: 100%;
         select {
           display: block;
+
           & + select {
             margin-left: 0;
             margin-top: 5px;

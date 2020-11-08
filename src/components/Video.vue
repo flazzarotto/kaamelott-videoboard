@@ -1,9 +1,9 @@
 <template>
   <div :class="{'video-component': 1, openInfos}">
     <div id="copy-links">
-      <a @click="copyToClipboard(embedCode, {type: 'code'})"><i class="icon-code"></i></a>
+      <a @click="copyToClipboard(embedCode, {type: 'code'}, $event)"><i class="icon-code"></i></a>
 <!--   TODO add internal link instead of external   -->
-      <a @click="copyToClipboard(link, {type: 'lien'})"><i class="icon-link"></i></a>
+      <a @click="copyToClipboard(href, {type: 'lien'}, $event)" :href="href"><i class="icon-link"></i></a>
       <span :class="{'helper': 1, active: helper}">{{ helperText }}</span>
     </div>
     <div class="video-container" :style="computedStyle" v-if="!currentVideo && thumbnail.length">
@@ -34,10 +34,16 @@
 import {useStore} from "@/store/store";
 import {copyToClipboard} from "@/lib/functions/copyToClipboard";
 import {ucFirst} from "@/lib/string";
+import {videoDetailRoute} from "@/router/routes";
+import {routePrefixer} from "@/router/router";
 
 export default {
   name: "VideoComponent",
   props: {
+    directLink: {
+      type: Boolean,
+      default: false
+    },
     id: {
       type: String
     },
@@ -80,22 +86,24 @@ export default {
     return {
       helper: false,
       helperText: '',
-      openInfos: false,
+      openInfos: this.directLink,
       basicStyle: {
         position: 'relative',
         height: '0',
         width: '100%',
         'padding-bottom': (this.ratio * 100) + '%'
-      },
-      clicked: false
+      }
     }
   },
   computed: {
+    href() {
+      return routePrefixer + videoDetailRoute.path.replace(':video', this.id)
+    },
     computedStyle() {
       return {...this.basicStyle, ...this.style}
     },
     currentVideo() {
-      return this.store.state.currentVideo === this.src
+      return this.directLink || this.store.state.currentVideo === this.src
     },
     src() {
       return this.embedCode
@@ -112,7 +120,11 @@ export default {
     setCurrentVideo() {
       this.store.setCurrentVideo(this.src)
     },
-    copyToClipboard(value, {type}) {
+    copyToClipboard(value, {type}, $event = null) {
+      if ($event) {
+        $event.preventDefault()
+        $event.stopPropagation()
+      }
       copyToClipboard(value, () => {
         let helperText = this.helperText = ucFirst(type) + ' copié dans le presse-papier !'
         this.helper = true
@@ -328,16 +340,8 @@ export default {
   padding: 5px;
   z-index: 12;
   a {
-    border-radius: 3px;
-    background: white;
-    padding: 5px 3px 0;
-    margin: 0 3px;
-    display: inline-block;
-    font-size: 18px;
-    cursor: pointer;
-    &:hover, &:active, &:focus {
-      background: rgba(128,128,128, 0.9);
-    }
+    @include btn;
+    color: black;
   }
   .helper {
     position: absolute;

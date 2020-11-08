@@ -3,22 +3,15 @@
     <figure><img :src="Perceval" alt="Perceval"/></figure>
     {{ title }}
   </h1>
-  <SearchBar></SearchBar>
-  <section id="videos">
-    <VideoListComponent></VideoListComponent>
-  </section>
+  <router-view></router-view>
 </template>
 
 <script>
-import VideoListComponent from "@/components/VideoListComponent"
-import SearchBar from "@/components/SearchBar"
 import Perceval from '@/assets/perceval.png'
 
 export default {
   name: 'App',
   components: {
-    SearchBar,
-    VideoListComponent,
   },
   data() {
     return {

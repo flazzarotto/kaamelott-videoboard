@@ -46,6 +46,7 @@ for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
     VideoManager.addEpisode(data.episode)
 
     VideoManager.addVideo(
+        lineNumber,
         btoa(''+hashCode(data.link)),
         data.link,
         data.title,
@@ -55,6 +56,8 @@ for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
         data.episode,
         embedParameters
     )
+
+    VideoManager.videos = VideoManager.videos.sort(() => 0.5 - Math.random())
 }
 
 export default VideoManager

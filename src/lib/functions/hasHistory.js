@@ -1,0 +1,1 @@
+export function hasHistory () { return window.history.length > 2 }

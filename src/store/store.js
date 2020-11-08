@@ -1,21 +1,20 @@
 import { reactive, provide, inject, readonly } from 'vue'
 import VideoManager from './videos'
 
+const defaultSearch = {findEpisodes: '', fullText: ''}
+
 const state = reactive({
     videos: VideoManager.videos,
     episodes: VideoManager.episodes,
     currentVideo: null,
-    findEpisodes: '',
-    search: '',
+    search: defaultSearch,
 })
 
 const mutations = {
-    changeSearch(newSearch) {
-        state.search = newSearch
-        this.setCurrentVideo(null)
-    },
-    changeEpisodes(book, tome, episode) {
-        state.findEpisodes = [book, tome, episode].map(x => x ?? '').join('')
+    changeSearch(search) {
+        search = {...defaultSearch, ...search}
+
+        state.search = search
         this.setCurrentVideo(null)
     },
     setCurrentVideo(video) {

@@ -65,6 +65,7 @@ export default {
                 }
             )
         }
+
         const result = workingSet.filter(x => x.score > 0)
         result.sort((a, b) => {
             return b.score - a.score

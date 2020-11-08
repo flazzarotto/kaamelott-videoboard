@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import VideoComponent from "@/components/VideoComponent"
+import VideoComponent from "@/components/Video"
 import {useStore} from "@/store/store"
 import fullTextSearch from '@/lib/FullTextSearch'
 
@@ -27,16 +27,20 @@ export default {
   },
   computed: {
     videos() {
-      if (this.store.state.search.length < 3 && !this.store.state.findEpisodes) {
-        if (!this.store.state.search.length && !this.store.state.findEpisodes) {
+      const search = this.store.state.search.fullText
+      const findEpisodes = this.store.state.search.findEpisodes
+
+      if (search.length < 3 && !findEpisodes) {
+        if (!search.length) {
           return this.setLastVideos(this.store.state.videos.slice(0, this.maxVideo))
         }
         return this.lastVideos
       }
+
       const videos = fullTextSearch.search(
-          this.store.state.search,
+          search,
           this.store.state.videos,
-          this.store.state.findEpisodes).slice(0, this.maxVideo)
+          findEpisodes).slice(0, this.maxVideo)
       return this.setLastVideos(videos)
     }
   },
@@ -54,11 +58,13 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/assets/scss/variable";
+
 #videolist {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
+
 .empty {
   @include video-component;
   opacity: 0;
