@@ -1,6 +1,11 @@
 {
   "app_title": "Kaamelott VideoBoard",
-  "title:about": "À propos de %item%",
+  "app_description": "Kaamelott VideoBoard est un petit outil sympa pour partager des mèmes issus des épisodes de Kaamelott",
+  "app_video_title": "%title% ::: %episode% ::: Kaamelott VideoBoard",
+  "app_video_description": "Extrait vidéo '%title%' du %episode%",
+  "app_about_title": "À propos de Kaamelott VideoBoard",
+  "app_about:contact_title":  "Contact / infos",
+  "app_about_description": "Kaamelott VideoBoard est un petit outil sympa pour partager des mèmes issus des épisodes de Kaamelott",
   "clipboard:copied": "%item% copié dans le presse-papier !",
   "episode:L": "Livre %number%",
   "episode:T": "Tome %number%",
@@ -11,5 +16,6 @@
   "search:reset:helper": "Tout cramer et reprendre à zéro",
   "search:reset": "Réinitialiser",
   "search:fulltext:placeholder": "Recherche...",
+  "link_back": "Accueil",
   "video-list:no-result": "Aucun résultat pour votre recherche"
 }

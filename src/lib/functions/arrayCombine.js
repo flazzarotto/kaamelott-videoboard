@@ -1,6 +1,6 @@
-export function arrayCombine(array1, array2) {
-    return array1.reduce(function(obj, key, index) {
-        obj[key] = array2[index]
+export function arrayCombine(keys, values) {
+    return keys.reduce(function(obj, key, index) {
+        obj[key] = values[index]
         return obj
     }, {})
 }

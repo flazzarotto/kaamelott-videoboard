@@ -1,5 +1,7 @@
-import {createStore} from "@/store/store";
-import {paramsCalculator} from "@/router/paramsCalculator";
+import {createStore} from "@/store/store"
+import {paramsCalculator} from "@/router/paramsCalculator"
+import routes from './routes'
+import {getSeoDataFromRoute} from "@/lib/functions/setSeoDataFromRoute";
 
 const store = createStore()
 
@@ -25,6 +27,16 @@ export default {
                 }
                 store.changeSearch({...to.query})
                 break
+        }
+
+        if (to.matched.length) {
+            const route = routes.filter(r => r.name === to.matched[0].name)[0]
+            if (route) {
+                // store and router injection for SEO data fetching
+                route.inject({store, currentRoute: to})
+                // generate SEO meta tags
+                getSeoDataFromRoute(route)
+            }
         }
 
         next()

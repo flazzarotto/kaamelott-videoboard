@@ -14,7 +14,7 @@ const TypeFactory = function (matches, getEmbedUri, getThumbnail) {
 const youtubeEmbed = 'https://www.youtube.com/embed/'
 const youtubeThumbnail = function () {
     return function (videoId) {
-        return `https://img.youtube.com/vi/${videoId}/default.jpg`
+        return `https://img.youtube.com/vi/${videoId}/0.jpg`
     }
 }
 const youtubeAutoplay = function (embed) {
@@ -69,6 +69,7 @@ const VideoManager = {
         const params = {width: 720, height: 405, allowfullscreen: true, ...embedParameters}
         keywords = [episode, keywords, title, characters.join(','), script].join(',')
             .replace(/[ ,;.]+/g, ',').replace(/,$/, '')
+        let episodeNumber = episode.split(' ', 1)
         let v = {
             index,
             id,
@@ -78,7 +79,8 @@ const VideoManager = {
             keywords: lcSlug(keywords),
             script,
             characters,
-            episode: episode.split(' ', 1)[0]
+            episode: episodeNumber,
+            episodeTitle: episode.replace(new RegExp('^'+episodeNumber+'\\s+'), '')
         }
         this.videos.push(v)
         return v

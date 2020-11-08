@@ -1,12 +1,12 @@
 <template>
   <section>
-    <router-link :to="{name: 'home'}" class="link">Retour</router-link>
-    <h2>{{ trans('title:about', {item: trans('app_title')}) }}</h2>
+    <router-link :to="{name: 'home'}" class="link">{{ trans('link_back') }}</router-link>
+    <h2>{{ trans('app_about_title') }}</h2>
     <article>
       <p>TODO</p>
     </article>
     <aside>
-      <h3>{{ trans('title:contact') }}</h3>
+      <h3>{{ trans('app_about:contact_title') }}</h3>
       <p>TODO</p>
     </aside>
   </section>

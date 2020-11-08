@@ -3,12 +3,15 @@
     <router-link :to="{name: 'home'}" class="link">{{ trans('link_back') }}</router-link>
     <VideoComponent v-bind="video" :directLink="true"></VideoComponent>
   </section>
+  <router-link :to="{name: 'about'}" class="link">
+    {{ trans('app_about_title') }}
+  </router-link>
 </template>
 
 <script>
 import Video from "@/components/Video"
 import {useStore} from "@/store/store"
-import {trans} from "@/lib/functions/trans";
+import {trans} from "@/lib/functions/trans"
 
 export default {
   name: "SingleVideo",
@@ -43,5 +46,9 @@ section {
     text-align: center;
   }
 
+}
+
+.link {
+  margin-top: 60px;
 }
 </style>
