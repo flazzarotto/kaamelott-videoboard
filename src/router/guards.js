@@ -12,8 +12,9 @@ export default {
                     case 'home':
                         break
                     default:
-                        // if hitting 'Home' button from another page, try to get search parameters back
-                        if (Object.values(store.state.search).join('').replace(/\s+/, '').length) {
+                        // if hitting 'Home' button from another page, try to get search parameters back, and redirect
+                        if (Object.values(store.state.search).join('')
+                            .replace(/\s+/, '').length) {
                             router.replace({
                                 name: 'home', query: paramsCalculator(store.state.search)
                             })

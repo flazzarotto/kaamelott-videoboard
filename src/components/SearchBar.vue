@@ -1,30 +1,33 @@
 <template>
   <nav>
     <div>
-      <input type="text" v-model="search" @input="updateSearch()" placeholder="Recherche..."/>
+      <input type="text" v-model="search" @input="updateSearch()"
+             :placeholder="trans('search:fulltext:placeholder')"/>
       <button :class="{show: search.length || selectedBook}" @click="raz()">
-        <span>Tout cramer et reprendre à zéro</span>
-        <img :src="leodagan" alt="Réinitialiser"/>
+        <span>{{ trans('search:reset:helper') }}</span>
+        <img :src="leodagan" :alt="trans('search:reset')"/>
       </button>
     </div>
     <div>
-      <select id="book" v-model="selectedBook" title="Livre" @change="updateEpisode()">
-        <option selected :value="null">Tous les livres</option>
-        <option v-for="(val, book) in episodes" :key="book" :value="book">{{ trans(book) }}</option>
-      </select>
-      <select id="tome" v-model="selectedTome" :class="{hidden: selectedBook === null}" title="Tome"
+      <select id="book" v-model="selectedBook" :title="trans('episode:L',{number: ''})"
               @change="updateEpisode()">
-        <option selected :value="null">Tous les tomes</option>
+        <option selected :value="null">{{ trans('search:episode:allBooks') }}</option>
+        <option v-for="(val, book) in episodes" :key="book" :value="book">{{ trans_episode(book) }}</option>
+      </select>
+      <select id="tome" v-model="selectedTome" :class="{hidden: selectedBook === null}"
+              :title="trans('episode:T',{number: ''})"
+              @change="updateEpisode()">
+        <option selected :value="null">{{ trans('search:episode:allTomes') }}</option>
         <option v-for="(val, tome) in selectedBook? episodes[selectedBook] : []" :key="tome" :value="tome">
-          {{ trans(tome) }}
+          {{ trans_episode(tome) }}
         </option>
       </select>
       <select id="episode" v-model="selectedEpisode" :class="{hidden: selectedTome === null }"
-              title="Episode" @change="updateEpisode()">
-        <option selected :value="null">Tous les épisodes</option>
+              :title="trans('episode:E',{number: ''})" @change="updateEpisode()">
+        <option selected :value="null">{{ trans('search:episode:allEpisodes') }}</option>
         <option v-for="(val, episode) in (selectedBook && selectedTome) ? episodes[selectedBook][selectedTome] : []"
                 :key="episode" :value="episode">
-          {{ [trans(episode), val].join(' : ') }}
+          {{ [trans_episode(episode), val].join(' : ') }}
         </option>
       </select>
     </div>
@@ -35,6 +38,7 @@
 import {useStore} from "@/store/store"
 import leodagan from '@/assets/leodagan.gif'
 import {paramsCalculator} from "@/router/paramsCalculator";
+import {trans} from "@/lib/functions/trans";
 
 export default {
   name: "SearchBar",
@@ -44,7 +48,7 @@ export default {
       selectedTome: null,
       selectedEpisode: null,
       search: this.store.state.search.fullText,
-      episodes: this.store.state.search.episodes,
+      episodes: this.store.state.episodes,
       leodagan
     }
   },
@@ -69,17 +73,9 @@ export default {
     updateSearch() {
       this.$router.push({query: paramsCalculator(this.$route.query, {fullText: this.search})})
     },
-    trans(string) {
-      switch (string.charAt(0)) {
-        case 'L':
-          return 'Livre ' + string.substring(1)
-        case 'T':
-          return 'Tome ' + string.substring(1)
-        case 'E':
-          return 'Episode ' + string.substring(1)
-        default:
-          return;
-      }
+    trans,
+    trans_episode(string) {
+      return this.trans('episode:'+string.charAt(0), {number: string.substring(1)})
     }
   },
   setup() {

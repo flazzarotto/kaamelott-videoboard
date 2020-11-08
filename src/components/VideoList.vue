@@ -1,7 +1,7 @@
 <template>
   <div id="videolist">
     <VideoComponent v-for="(v,k) in videos" :key="k" v-bind="v"></VideoComponent>
-    <div v-if="!videos.length">No result for your search</div>
+    <div v-if="!videos.length">{{ trans('video-list:no-result') }}</div>
     <div v-for="k in (new Array(5))" :key="k" class="empty"></div>
   </div>
 </template>
@@ -10,6 +10,7 @@
 import VideoComponent from "@/components/Video"
 import {useStore} from "@/store/store"
 import fullTextSearch from '@/lib/FullTextSearch'
+import {trans} from "@/lib/functions/trans";
 
 export default {
   name: 'VideoListComponent',
@@ -45,6 +46,7 @@ export default {
     }
   },
   methods: {
+    trans,
     setLastVideos(videos) {
       this.lastVideos = videos
       return this.lastVideos

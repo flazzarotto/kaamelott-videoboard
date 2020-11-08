@@ -36,6 +36,7 @@ import {copyToClipboard} from "@/lib/functions/copyToClipboard";
 import {ucFirst} from "@/lib/string";
 import {videoDetailRoute} from "@/router/routes";
 import {routePrefixer} from "@/router/router";
+import {trans} from "@/lib/functions/trans";
 
 export default {
   name: "VideoComponent",
@@ -118,6 +119,7 @@ export default {
     }
   },
   methods: {
+    trans,
     setCurrentVideo() {
       this.store.setCurrentVideo(this.src)
     },
@@ -127,7 +129,7 @@ export default {
         $event.stopPropagation()
       }
       copyToClipboard(value, () => {
-        let helperText = this.helperText = ucFirst(type) + ' copié dans le presse-papier !'
+        let helperText = this.helperText = this.trans('clipboard:copied', {item: ucFirst(type)})
         this.helper = true
         setTimeout(() => {
           if (this.helperText === helperText) {

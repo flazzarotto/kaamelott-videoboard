@@ -1,13 +1,14 @@
 <template>
   <section>
-    <router-link :to="{name: 'home'}" class="link">Retour</router-link>
+    <router-link :to="{name: 'home'}" class="link">{{ trans('link_back') }}</router-link>
     <VideoComponent v-bind="video" :directLink="true"></VideoComponent>
   </section>
 </template>
 
 <script>
-import Video from "@/components/Video";
-import {useStore} from "@/store/store";
+import Video from "@/components/Video"
+import {useStore} from "@/store/store"
+import {trans} from "@/lib/functions/trans";
 
 export default {
   name: "SingleVideo",
@@ -23,6 +24,7 @@ export default {
     }
   },
   methods: {
+    trans
   },
   setup() {
     return {store: useStore()}

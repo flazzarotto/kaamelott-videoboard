@@ -1,13 +1,15 @@
 <template>
   <h1>
     <figure><img :src="Perceval" alt="Perceval"/></figure>
-    {{ title }}
+    {{ trans('app_title') }}
   </h1>
   <router-view></router-view>
 </template>
 
 <script>
 import Perceval from '@/assets/perceval.png'
+import {useStore} from "@/store/store"
+import {trans} from '@/lib/functions/trans'
 
 export default {
   name: 'App',
@@ -15,9 +17,14 @@ export default {
   },
   data() {
     return {
-      title: 'Kaamelott Videoboard',
       Perceval
     }
+  },
+  methods: {
+    trans
+  },
+  setup() {
+    return {store: useStore()}
   }
 }
 </script>

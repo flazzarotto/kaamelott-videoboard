@@ -4,17 +4,27 @@
     <section id="videos">
       <VideoListComponent></VideoListComponent>
     </section>
-    <router-link :to="{name: 'about'}" class="link">À propos de Kaamelott Videoboard</router-link>
+    <router-link :to="{name: 'about'}" class="link">
+      {{ trans('title:about', {item: trans('app_title')}) }}
+    </router-link>
   </section>
 </template>
 
 <script>
 import SearchBar from "@/components/SearchBar";
 import VideoListComponent from "@/components/VideoList";
+import {trans} from "@/lib/functions/trans";
+import {useStore} from "@/store/store";
 
 export default {
   name: "Main",
-  components: {VideoListComponent, SearchBar}
+  components: {VideoListComponent, SearchBar},
+  methods: {
+    trans
+  },
+  setup() {
+    return {store: useStore()}
+  }
 }
 </script>
 

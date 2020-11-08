@@ -1,0 +1,15 @@
+{
+  "app_title": "Kaamelott VideoBoard",
+  "title:about": "À propos de %item%",
+  "clipboard:copied": "%item% copié dans le presse-papier !",
+  "episode:L": "Livre %number%",
+  "episode:T": "Tome %number%",
+  "episode:E": "Épisode %number%",
+  "search:episode:allBooks": "Tous les livres",
+  "search:episode:allTomes": "Tous les tomes",
+  "search:episode:allEpisodes": "Tous les épisodes",
+  "search:reset:helper": "Tout cramer et reprendre à zéro",
+  "search:reset": "Réinitialiser",
+  "search:fulltext:placeholder": "Recherche...",
+  "video-list:no-result": "Aucun résultat pour votre recherche"
+}
