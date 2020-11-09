@@ -29,7 +29,7 @@ const videoDetailRoute = {
     component: SingleVideo,
     fetch() {
         if (!this.data) {
-            this.data = this.store.state.videos.filter(x => x.id === this.currentRoute.params.video)[0] ?? []
+            this.data = this.store.state.videos.filter(x => x.hash === this.currentRoute.params.video)[0] ?? []
         }
         return this.data
     },

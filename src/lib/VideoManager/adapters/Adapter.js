@@ -1,5 +1,5 @@
 /**
- * Adapter definition for managing video links
+ * VideoLoader definition for managing video links
  */
 export class Adapter {
     /**

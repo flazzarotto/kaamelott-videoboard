@@ -38,13 +38,16 @@ import {trans} from "@/lib/functions/trans";
 import {routeCalculator} from "@/router/router";
 
 export default {
-  name: "VideoComponent",
+  name: "Video",
   props: {
     directLink: {
       type: Boolean,
       default: false
     },
     id: {
+      type: Number
+    },
+    hash: {
       type: String
     },
     characters: {
@@ -106,7 +109,7 @@ export default {
   computed: {
     // generate absolute link to this video
     href() {
-      return routeCalculator('videoDetail', {video: this.id})
+      return routeCalculator('videoDetail', {video: this.hash})
     },
     computedStyle() {
       return {...this.basicStyle, ...this.style}

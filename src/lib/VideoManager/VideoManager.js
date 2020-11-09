@@ -1,5 +1,6 @@
 import {lcSlug} from "@/lib/FullTextSearch";
 import {Adapter} from "@/lib/VideoManager/adapters/Adapter";
+import sha1 from 'sha1'
 
 // query string parser
 const qs = require('qs')
@@ -42,17 +43,12 @@ const VideoManager = {
     },
     /**
      * @param index
-     * @param id
-     * @param link link to the video
-     * @param title title of the video
-     * @param keywords list of comma-separated keywords (title and script will already be in the keywords)
-     * @param characters
-     * @param script script of the video
-     * @param episode
+     * @param video {Video}
      * @param embedParameters list of html parameters for iframe
      * @return Object video representation
      */
-    addVideo(index, id, link, title, keywords = '', characters = [], script = '', episode = '', embedParameters = {}) {
+    addVideo(index, video, embedParameters = {}) {
+        let {link, keywords, episode, title, characters, script, id} = video.expose()
         // remove trailing spaces
         link = link.replace(/(\s+)|(\s+$)/g, '')
         // default embed params
@@ -61,10 +57,11 @@ const VideoManager = {
         keywords = [episode, keywords, title, characters.join(','), script].join(',')
             .replace(/[ ,;.]+/g, ',').replace(/,$/, '')
         // get episode number
-        let episodeNumber = episode.split(' ', 1)
-        let video = {
+        let episodeNumber = episode.split(' ', 1).join('')
+        let videoObject = {
             index,
             id,
+            hash: sha1(link),
             link,
             ...this.getEmbedCode(link, params),
             title,
@@ -74,7 +71,7 @@ const VideoManager = {
             episode: episodeNumber,
             episodeTitle: episode.replace(new RegExp('^' + episodeNumber + '\\s+'), '')
         }
-        this.videos.push(video)
+        this.videos.push(videoObject)
         return video
     },
     /**

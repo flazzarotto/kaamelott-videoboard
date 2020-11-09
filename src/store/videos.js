@@ -1,12 +1,16 @@
 import VideoManager from "@/lib/VideoManager/VideoManager"
-import csvData from '@/data/videos.csv'
 import {youtubeLong, youtubeShort} from "@/lib/VideoManager/adapters/youtube"
-import sha1 from 'sha1'
-// characters stored in json so that we can use small names in CSV
-import characters from '@/data/characters.json'
+import {kvbLoader} from "@/store/VideoLoader/adapters/kaamelott-videoboard-backend";
+import {localLoader} from "@/store/VideoLoader/adapters/local";
+
+const videoLoaders = [
+    kvbLoader,
+    localLoader
+]
 
 // register adapters (youtube) to manage video sources
 VideoManager.registerAdapters(youtubeLong, youtubeShort)
+
 
 // custom embed parameters
 const embedParameters = {
@@ -14,47 +18,48 @@ const embedParameters = {
     allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 }
 
-// CSV header
-const header = csvData[0]
+const fetchFunction = (videoLoader, params = {}) => {
+    videoLoader.fetch(params, (video, index) => {
+        // adding episode in episode list if not already in
+        VideoManager.addEpisode(video.partOfEpisode)
 
-// reading the CSV line by line
-for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
-    const line = csvData[lineNumber]
-
-    // creating key:value using header
-    const data = Object.assign(...header.map((k, i) => ({[k]: line[i]})))
-
-    // characters are needed
-    if (!data.characters) {
-        continue
-    }
-
-    const chars = data.characters.replace(/\s+/g, '').split(',')
-
-    data.characters = chars.filter(x => characters[x])
-
-    if (data.characters.length !== chars.length) {
-        console.error(`At least one unknown character in group '${chars.join(', ')}' for video '${data.title}'.`)
-    }
-
-    // adding episode in episode list if not already in
-    VideoManager.addEpisode(data.episode)
-
-    // adding video
-    VideoManager.addVideo(
-        lineNumber,
-        sha1(data.link),
-        data.link,
-        data.title,
-        data.keywords,
-        data.characters.map(x => characters[x]),
-        data.script,
-        data.episode,
-        embedParameters
-    )
-
-    // random sorting for home page
-    VideoManager.videos = VideoManager.videos.sort(() => .5 - Math.random())
+        // adding video
+        VideoManager.addVideo(
+            index,
+            video,
+            embedParameters
+        )
+    })
 }
+
+for (let videoLoader of videoLoaders) {
+    if (!videoLoader.match(process.env.VUE_APP_BACKEND_URL)) {
+        if (videoLoader.isLocal()) {
+            videoLoader.match()
+        }
+        else {
+            continue
+        }
+    }
+    try {
+        fetchFunction(videoLoader)
+    }
+    catch(e) {
+        console.warn(e.message)
+        // fallback if backend down
+        if (!videoLoader.isLocal()) {
+            try {
+                fetchFunction(localLoader)
+            }
+            catch (e) {
+                console.error(e.message)
+            }
+        }
+    }
+    break
+}
+
+// random sorting for home page
+VideoManager.videos = VideoManager.videos.sort(() => .5 - Math.random())
 
 export default VideoManager

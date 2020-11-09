@@ -19,7 +19,7 @@ const initialWorkingSet = {}
 export const availableSorts = {
     'score': (sort) => (a, b) => sort * (b.score - a.score),
     'ab': (sort) => (a, b) => sort * a.title.localeCompare(b.title),
-    'chrono': (sort) => (a, b) => sort * (a.index - b.index),
+    'chrono': (sort) => (a, b) => sort * a.episode.localeCompare(b.episode),
     'random': () => () => .5 - Math.random()
 }
 
@@ -116,7 +116,9 @@ export default {
                             return
                         }
 
-                        x.score *= (x[field].reduce(function (prevVal, currVal, idx) {
+                        const array = (x[field] instanceof Array) ? x[field] : [x[field]]
+
+                        x.score *= (array.reduce(function (prevVal, currVal, idx) {
                                 return idx === 0 ? currVal : prevVal + ', ' + currVal;
                             }, ''
                         ).indexOf(value) >= 0)

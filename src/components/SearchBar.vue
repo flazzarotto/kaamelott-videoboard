@@ -38,10 +38,14 @@
           </option>
         </select>
       </label>
-      <label class="sort" v-if="orderBy !== 'random'">
+      <label class="sort">
         <input type="checkbox" v-model="sortAsc" @change="updateOrder()"/>
         <button>
-          {{ sortAsc ? trans('search:sort:asc') : trans('search:sort:desc') }}
+          {{
+            (orderBy === 'random')
+                ? trans('search:sort:random')
+                : (sortAsc ? trans('search:sort:asc') : trans('search:sort:desc'))
+          }}
         </button>
       </label>
     </div>
@@ -132,6 +136,7 @@ select {
   display: flex;
   flex-direction: row;
   align-items: baseline;
+
   select {
     margin-left: 5px;
   }

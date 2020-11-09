@@ -1,20 +1,20 @@
 <template>
   <div id="videolist">
-    <VideoComponent v-for="(v,k) in videos" :key="k" v-bind="v"></VideoComponent>
+    <Video v-for="(v,k) in videos" :key="k" v-bind="v"></Video>
     <div v-if="!videos.length">{{ trans('video-list:no-result') }}</div>
     <div v-for="k in (new Array(5))" :key="k" class="empty"></div>
   </div>
 </template>
 
 <script>
-import VideoComponent from "@/components/Video"
+import Video from "@/components/Video"
 import {useStore} from "@/store/store"
 import fullTextSearch from '@/lib/FullTextSearch'
 import {trans} from "@/lib/functions/trans";
 
 export default {
   name: 'VideoListComponent',
-  components: {VideoComponent},
+  components: {Video},
   props: {
     maxVideo: {
       type: Number,
@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      lastVideos: this.store.state.videos.slice(0, 20)
+
     }
   },
   computed: {
