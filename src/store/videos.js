@@ -54,7 +54,7 @@ for (let lineNumber = 1; lineNumber < csvData.length; lineNumber++) {
     )
 
     // random sorting for home page
-    VideoManager.videos = VideoManager.videos.sort((a,b) => b.id.localeCompare(a.id))
+    VideoManager.videos = VideoManager.videos.sort(() => .5 - Math.random())
 }
 
 export default VideoManager

@@ -16,9 +16,18 @@ export function lcSlug(text) {
 
 const initialWorkingSet = {}
 
+export const availableSorts = {
+    'score': (sort) => (a, b) => sort * (b.score - a.score),
+    'ab': (sort) => (a, b) => sort * a.title.localeCompare(b.title),
+    'chrono': (sort) => (a, b) => sort * (a.index - b.index),
+    'random': () => () => .5 - Math.random()
+}
+
 export default {
-    search(searchText, objectSet, requiredFields = {}, searchField = 'keywords') {
+    search(searchText, objectSet, requiredFields = {}, order = 'score', sort = 'asc',
+           searchField = 'keywords') {
         const hash = sha1(JSON.stringify(objectSet))
+
         if (!initialWorkingSet[hash]) {
             initialWorkingSet[hash] = []
             // make a first copy of objectSet with items having keywords field
@@ -72,7 +81,7 @@ export default {
                             x.score +=
                                 scoreModifier
                                 // negative score if not found
-                                * (found ? 1 : (-2 / word.length))
+                                * (found ? 1 : (-1 / word.length))
                                 //
                                 * (
                                     // word pertinence according to search length and document corpus
@@ -117,9 +126,11 @@ export default {
         }
 
         const result = workingSet.filter(x => x.score > 0.1)
-        result.sort((a, b) => {
-            return b.score - a.score
-        })
+        result.sort(
+            (availableSorts[order] ?? availableSorts['score'])(
+                (sort === 'asc') ? 1 : -1
+            )
+        )
         return result
     }
 }

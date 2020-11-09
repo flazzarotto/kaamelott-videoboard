@@ -3,7 +3,7 @@
     <div>
       <input type="text" v-model="search" @input="updateSearch()"
              :placeholder="trans('search:fulltext:placeholder')"/>
-      <button :class="{show: search.length || selectedBook}" @click="raz()">
+      <button v-show="search.length || selectedBook" @click="raz()">
         <span>{{ trans('search:reset:helper') }}</span>
         <img :src="leodagan" :alt="trans('search:reset')"/>
       </button>
@@ -30,6 +30,20 @@
           {{ [trans_episode(episode), val].join(' : ') }}
         </option>
       </select>
+      <label class="order">
+        Tri
+        <select id="orderBy" v-model="orderBy" @change="updateOrder(true)">
+          <option v-for="(func, order) in availableSorts" :key="order" :value="order">
+            {{ trans('search:order:' + order) }}
+          </option>
+        </select>
+      </label>
+      <label class="sort" v-if="orderBy !== 'random'">
+        <input type="checkbox" v-model="sortAsc" @change="updateOrder()"/>
+        <button>
+          {{ sortAsc ? trans('search:sort:asc') : trans('search:sort:desc') }}
+        </button>
+      </label>
     </div>
   </nav>
 </template>
@@ -40,6 +54,7 @@ import Leodagan from '@/assets/leodagan.gif'
 import {paramsCalculator} from "@/router/paramsCalculator";
 import {trans} from "@/lib/functions/trans";
 import {episodeParser} from "@/lib/functions/episodeParser";
+import {availableSorts} from "@/lib/FullTextSearch";
 
 export default {
   name: "SearchBar",
@@ -50,10 +65,15 @@ export default {
       selectedEpisode: episodeParser(this.store.state.search.findEpisodes)[2],
       search: this.store.state.search.fullText,
       episodes: this.store.state.episodes,
-      leodagan: Leodagan
+      leodagan: Leodagan,
+      orderBy: this.store.state.search.order,
+      sortAsc: (this.store.state.search.sort === 'asc'),
     }
   },
   computed: {
+    availableSorts() {
+      return availableSorts
+    }
   },
   methods: {
     // reset form
@@ -64,12 +84,17 @@ export default {
       this.search = ''
       this.$router.push({query: {}})
     },
+    updateOrder(reinitSort = false) {
+      this.sortAsc = reinitSort || this.sortAsc
+      const sort = (this.sortAsc ? 'asc' : 'desc')
+      this.$router.push({query: paramsCalculator(this.$route.query, {sort, order: this.orderBy})})
+    },
     // search for book / tome / episode number
     updateEpisode() {
-      if (this.selectedBook === null) {
+      if (this.selectedBook == null) {
         this.selectedTome = null
       }
-      if (this.selectedTome === null) {
+      if (this.selectedTome == null) {
         this.selectedEpisode = null
       }
 
@@ -83,7 +108,7 @@ export default {
     },
     trans,
     trans_episode(string) {
-      return this.trans('episode:'+string.charAt(0), {number: string.substring(1)})
+      return this.trans('episode:' + string.charAt(0), {number: string.substring(1)})
     }
   },
   setup() {
@@ -95,11 +120,41 @@ export default {
 <style scoped lang="scss">
 select, input, button {
   font-size: 1.5rem;
-  width: 80%;
+  width: 100%;
+  height: min-content;
 }
 
 select {
   width: auto;
+}
+
+.order {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  select {
+    margin-left: 5px;
+  }
+}
+
+.sort {
+  position: relative;
+
+  input[type=checkbox] {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+
+  button {
+    font-size: 25px;
+    color: inherit;
+    pointer-events: none;
+  }
 }
 
 nav {
@@ -111,6 +166,7 @@ nav {
     display: flex;
     justify-content: left;
     width: 100%;
+    align-items: center;
 
     & + div {
       padding-top: 15px;
@@ -144,14 +200,7 @@ button {
   padding: 0;
   font-size: 0;
 
-  pointer-events: none;
-  opacity: 0;
   position: relative;
-
-  &.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
 
   span {
     position: absolute;
@@ -166,6 +215,7 @@ button {
       opacity: 1;
     }
   }
+
 }
 
 select.hidden {

@@ -32,27 +32,15 @@ export default {
       const search = this.store.state.search.fullText
       const findEpisodes = this.store.state.search.findEpisodes
 
-      if (search.length < 3 && !findEpisodes) {
-        if (!search.length) {
-          return this.setLastVideos(this.store.state.videos.slice(0, this.maxVideo))
-        }
-        return this.lastVideos
-      }
-
-      const videos = fullTextSearch.search(
+      return fullTextSearch.search(
           search,
           this.store.state.videos,
-          {episode: findEpisodes}).slice(0, this.maxVideo)
-      return this.setLastVideos(videos)
+          {episode: findEpisodes},
+      this.store.state.search.order, this.store.state.search.sort).slice(0, this.maxVideo)
     }
   },
   methods: {
     trans,
-    // keep in mind last videos founded (used when no pertinent search)
-    setLastVideos(videos) {
-      this.lastVideos = videos
-      return this.lastVideos
-    }
   },
   setup() {
     return {store: useStore()}

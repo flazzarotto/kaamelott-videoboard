@@ -15,7 +15,13 @@
   "search:episode:allEpisodes": "Tous les épisodes",
   "search:reset:helper": "Tout cramer et reprendre à zéro",
   "search:reset": "Réinitialiser",
-  "search:fulltext:placeholder": "Recherche...",
+  "search:order:score":  "Pertinence",
+  "search:order:ab": "Alphabétique",
+  "search:order:chrono":  "Chronologique",
+  "search:order:random": "Aléatoire",
+  "search:sort:asc":  "▼",
+  "search:sort:desc": "▲",
+  "search:fulltext:placeholder": "Recherche par mots-clés, personnages, titre de l'épisode...",
   "link_back": "Accueil",
   "video-list:no-result": "Aucun résultat pour votre recherche"
 }

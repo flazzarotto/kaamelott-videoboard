@@ -26,6 +26,7 @@
         <p v-show="false">{{ keywords.replace(/,/g, ', ') }}</p>
       </div>
     </div>
+    <span class="episode">{{ episode + ' - ' + episodeTitle }}</span>
   </div>
 </template>
 
@@ -79,7 +80,15 @@ export default {
     thumbnail: {
       type: String,
       default: ''
-    }
+    },
+    episode: {
+      type: String,
+      default: ''
+    },
+    episodeTitle: {
+      type: String,
+      default: ''
+    },
   },
   data() {
     return {
@@ -151,7 +160,7 @@ export default {
 
 .video-component {
   @include video-component;
-  background: rgba(255, 255, 255, .3);
+  background: rgba(255, 255, 255, .7);
   flex-direction: column;
   height: min-content;
   position: relative;
@@ -173,6 +182,7 @@ export default {
     .script {
       text-align: left;
       white-space: pre-line;
+      margin-top: 0;
       //font-size: .8rem;
       i {
         display: block;
@@ -181,7 +191,7 @@ export default {
     }
     h2 {
       font-size: 1.1rem;
-      margin: 15px 0 7.5px;
+      margin: 7.5px 0 7.5px;
       position: relative;
       display: block;
       em {
@@ -323,6 +333,7 @@ export default {
 
 .characters {
   font-weight: bold;
+  margin-top: 0;
 }
 
 #copy-links {
@@ -358,5 +369,11 @@ export default {
   }
 }
 
+.episode {
+  float: left;
+  margin: -20px 75px 0 7.5px;
+  font-size: 0.8rem;
+  text-align: left;
+}
 
 </style>

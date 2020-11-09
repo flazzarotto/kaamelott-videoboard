@@ -4,7 +4,7 @@ import translations_fr from '@/translations/fr.json'
 
 const _translations = {fr: translations_fr}
 
-const defaultSearch = {findEpisodes: '', fullText: ''}
+const defaultSearch = {findEpisodes: '', fullText: '', order: 'score', sort: 'asc'}
 
 const available_languages = Object.keys(_translations)
 

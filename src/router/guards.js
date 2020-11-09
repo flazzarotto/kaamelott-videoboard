@@ -11,20 +11,24 @@ export default {
 
         switch (to.name) {
             case 'home':
-                switch (from.name) {
-                    case 'home':
-                        break
-                    default:
-                        // if hitting 'Home' button from another page, try to get search parameters back, and redirect
-                        if (Object.values(store.state.search).join('')
-                            .replace(/\s+/, '').length) {
-                            router.replace({
-                                name: 'home', query: paramsCalculator(store.state.search)
-                            })
-                            store.changeSearch({})
-                            return
-                        }
-                        break
+                if (from.name instanceof String && from.name.length) {
+                    switch (from.name) {
+                        case 'home':
+                            break
+                        default:
+                            // if hitting 'Home' button from another page, try to get search parameters back, and redirect
+                            if (Object.values(store.state.search).join('')
+                                .replace(/\s+/, '').length) {
+                                next()
+
+                                router.replace({
+                                    name: 'home', query: paramsCalculator(store.state.search)
+                                })
+                                store.changeSearch({})
+                                return
+                            }
+                            break
+                    }
                 }
                 store.changeSearch({...to.query})
                 break
