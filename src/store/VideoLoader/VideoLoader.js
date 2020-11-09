@@ -1,3 +1,4 @@
+// static videoLoader types
 export const VideoLoaderTypes = {
     get local() {
         return 'local'
@@ -7,6 +8,7 @@ export const VideoLoaderTypes = {
     }
 }
 
+// abstract video loader
 export class VideoLoader {
 
     #_type
@@ -14,18 +16,29 @@ export class VideoLoader {
     #_fetch
     #_match
 
+    // type: local / remote
     get type() {
         return this.#_type
     }
 
+    // endpoint or null
     get url() {
         return this.#_url
     }
 
+    /**
+     * Checks if loader is local
+     * @returns {boolean} true if local loader, false otherwise
+     */
     isLocal() {
         return this.type === VideoLoaderTypes.local
     }
 
+    /**
+     * @param fetchMethod {function(parameters: {}, callback: {function(video: Video, index: Number)} )}
+     * @param matchMethod {function({string?} url)}
+     * @param type {string} VideoLoaderType.local or VideoLoaderType.remote
+     */
     constructor(fetchMethod = () => {
     }, matchMethod = () => {
         return false

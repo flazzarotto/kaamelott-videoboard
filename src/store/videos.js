@@ -18,6 +18,7 @@ const embedParameters = {
     allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 }
 
+// generic fetch function with callback
 const fetchFunction = (videoLoader, params = {}) => {
     videoLoader.fetch(params, (video, index) => {
         // adding episode in episode list if not already in
@@ -32,6 +33,7 @@ const fetchFunction = (videoLoader, params = {}) => {
     })
 }
 
+// check compliant loaders
 for (let videoLoader of videoLoaders) {
     if (!videoLoader.match(process.env.VUE_APP_BACKEND_URL)) {
         if (videoLoader.isLocal()) {
@@ -42,13 +44,15 @@ for (let videoLoader of videoLoaders) {
         }
     }
     try {
+        // use first compliant loader
         fetchFunction(videoLoader)
     }
     catch(e) {
         console.warn(e.message)
-        // fallback if backend down
+        // fallback if backend down or no available loader
         if (!videoLoader.isLocal()) {
             try {
+                localLoader.match()
                 fetchFunction(localLoader)
             }
             catch (e) {
