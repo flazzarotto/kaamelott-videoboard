@@ -22,7 +22,7 @@
   "search:sort:asc":  "▼",
   "search:sort:desc": "▲",
   "search:sort:random": "…",
-  "search:fulltext:placeholder": "Recherche par mots-clés, personnages, titre de l'chapitre...",
+  "search:fulltext:placeholder": "Recherche par mots-clés, personnages, titre de chapitre...",
   "link_back": "Accueil",
   "video-list:no-result": "Aucun résultat pour votre recherche"
 }
