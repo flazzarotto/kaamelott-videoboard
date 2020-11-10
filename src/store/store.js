@@ -1,27 +1,28 @@
 import { reactive, provide, inject, readonly } from 'vue'
-import VideoManager from './videos'
-import translations_fr from '@/translations/fr.json'
-
-const _translations = {fr: translations_fr}
+import translations from '@/translations'
+import {next, getVideoData} from "@/store/videos";
 
 const defaultSearch = {findEpisodes: '', fullText: '', order: 'score', sort: 'asc'}
 
-const available_languages = Object.keys(_translations)
+const available_languages = Object.keys(translations)
 
 const state = reactive({
-    videos: VideoManager.videos,
-    episodes: VideoManager.episodes,
+    videos: [],
+    episodes: [],
     currentVideo: null,
     search: defaultSearch,
-    _translations,
     available_languages,
     lang: available_languages[0],
     get translations() {
-        return this._translations[this.lang]
+        return translations[this.lang]
     }
 })
 
 const mutations = {
+    updateFromVideoManager(VideoManager) {
+        state.videos = VideoManager.videos
+        state.episodes = VideoManager.episodes
+    },
     changeSearch(search) {
         search = {...defaultSearch, ...search}
 
@@ -39,11 +40,14 @@ const mutations = {
         state.lang = lang
     }
 }
+
 // Symbol used by Vue for the store
 export const storeSymbol = Symbol('store')
 export const createStore = () => {
     return { ...mutations, state: readonly(state) };
 }
+
+getVideoData(next(mutations.updateFromVideoManager))
 
 // use in component to access store
 export const useStore = () => inject(storeSymbol)

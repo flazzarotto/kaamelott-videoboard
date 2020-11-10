@@ -1,10 +1,10 @@
-import {VideoLoader, VideoLoaderTypes} from "@/store/VideoLoader/VideoLoader";
-import csvData from "@/data/videos.csv";
-import characters from "@/data/characters.json";
-import {Video} from "@/lib/VideoManager/Video";
+import {VideoLoader, VideoLoaderTypes} from "@/store/VideoLoader/VideoLoader"
+import csvData from "@/data/videos.csv"
+import characters from "@/data/characters.json"
+import {Video} from "@/lib/VideoManager/Video"
 
 export const localLoader = new VideoLoader(
-    function(parameters, cbFn) {
+    function(parameters, next) {
         // stub
         parameters
         // CSV header
@@ -41,9 +41,17 @@ export const localLoader = new VideoLoader(
                     tags: data.keywords
                 }
             )
-            cbFn(video, lineNumber)
+            // adding episode in episode list if not already in
+            this.videoManager.addEpisode(video.partOfEpisode)
+
+            // adding video
+            this.videoManager.addVideo(
+                lineNumber,
+                video
+            )
         }
 
+        next(this)
     },
     function (backendUrl) {
         return !backendUrl

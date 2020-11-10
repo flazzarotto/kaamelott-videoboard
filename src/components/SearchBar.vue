@@ -25,8 +25,9 @@
       <select id="episode" v-model="selectedEpisode" :class="{hidden: selectedTome === null }"
               :title="trans('episode:E',{number: ''})" @change="updateEpisode()">
         <option selected :value="null">{{ trans('search:episode:allEpisodes') }}</option>
-        <option v-for="(val, episode) in (selectedBook && selectedTome) ? episodes[selectedBook][selectedTome] : []"
-                :key="episode" :value="episode">
+        <option
+            v-for="(val, episode) in (episodes && episodes[selectedBook] && selectedTome) ? episodes[selectedBook][selectedTome] : []"
+            :key="episode" :value="episode">
           {{ [trans_episode(episode), val].join(' : ') }}
         </option>
       </select>
@@ -68,13 +69,15 @@ export default {
       selectedTome: episodeParser(this.store.state.search.findEpisodes)[1],
       selectedEpisode: episodeParser(this.store.state.search.findEpisodes)[2],
       search: this.store.state.search.fullText,
-      episodes: this.store.state.episodes,
       leodagan: Leodagan,
       orderBy: this.store.state.search.order,
       sortAsc: (this.store.state.search.sort === 'asc'),
     }
   },
   computed: {
+    episodes() {
+      return this.store.state.episodes
+    },
     availableSorts() {
       return availableSorts
     }

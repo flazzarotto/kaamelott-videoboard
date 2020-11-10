@@ -1,6 +1,7 @@
 <template>
   <div id="videolist">
-    <Video v-for="(v,k) in videos" :key="k" v-bind="v"></Video>
+    <Video v-for="(v,k) in videos" :key="k" v-bind="v" :window-scroll-top="scrollTop"
+           :window-height="windowHeight"></Video>
     <div v-if="!videos.length">{{ trans('video-list:no-result') }}</div>
     <div v-for="k in (new Array(5))" :key="k" class="empty"></div>
   </div>
@@ -23,7 +24,8 @@ export default {
   },
   data() {
     return {
-
+      scrollTop: -1,
+      windowHeight: -1,
     }
   },
   computed: {
@@ -36,11 +38,24 @@ export default {
           search,
           this.store.state.videos,
           {episode: findEpisodes},
-      this.store.state.search.order, this.store.state.search.sort).slice(0, this.maxVideo)
+          this.store.state.search.order, this.store.state.search.sort)//.slice(0, this.maxVideo)
     }
+  },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+    window.addEventListener('resize', this.handleScroll)
+    this.handleScroll()
+  },
+  unmounted() {
+    window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener('resize', this.handleScroll)
   },
   methods: {
     trans,
+    handleScroll() {
+      this.scrollTop = document.documentElement.scrollTop
+      this.windowHeight = window.innerHeight
+    }
   },
   setup() {
     return {store: useStore()}
@@ -54,7 +69,10 @@ export default {
 #videolist {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  @media (min-width: 715px) {
+    justify-content: space-between;
+  }
 }
 
 .empty {

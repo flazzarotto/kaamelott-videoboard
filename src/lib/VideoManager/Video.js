@@ -9,42 +9,44 @@ export class Video {
     #_thumbnailUrl
     #_autoplay
     #_partOfEpisode
-    #_people
+    #_characters
     #_tags
 
     /**
      *
      * @param id
-     * @param description
+     * @param citation
      * @param name
      * @param url
      * @param duration
      * @param thumbnailUrl
      * @param autoplay
      * @param partOfEpisode
-     * @param people
+     * @param characters
      * @param tags
      */
     constructor(
         {
             id, citation, name, url, duration = 0, thumbnailUrl = null, autoplay = null,
-            partOfEpisode, people, tags = ''
+            partOfEpisode, characters, tags = ''
         }) {
         this.#_id = id || this.error(id, 'Missing id for video ', arguments)
-        this.#_citation = citation || this.error(citation,`Missing script for video ${id}`)
+        this.#_citation = citation || this.error(citation, `Missing script for video ${id}`)
         this.#_name = name || this.error(name, `Missing title for video ${id}`)
         this.#_url = url || this.error(url, `Missing url for video ${id}`)
         this.#_duration = duration || this.error(duration, `Missing duration for video ${id}`,
-            null,'warn')
+            null, 'warn')
         this.#_thumbnailUrl = thumbnailUrl
         this.#_autoplay = autoplay
         this.#_partOfEpisode = partOfEpisode || this.error(partOfEpisode, `Missing episode for video ${id}`)
-        this.#_people = (people instanceof Array) ? people : this.error(people,`Missing characters for video ${id}`)
+        this.#_characters = (characters instanceof Array)
+            ? characters
+            : this.error(characters, `Missing characters for video ${id}`)
         this.#_tags = tags
     }
 
     error(field, message, additionalInfo = null, level = 'error') {
-        console[console[level] ? level :  'error'](message)
+        console[console[level] ? level : 'error'](message)
         if (additionalInfo) {
             console.info(additionalInfo)
         }
@@ -66,7 +68,7 @@ export class Video {
             link: this.#_url,
             title: this.#_name,
             keywords: this.#_tags,
-            characters: this.#_people,
+            characters: this.#_characters,
             script: this.#_citation,
             episode: this.#_partOfEpisode
         }

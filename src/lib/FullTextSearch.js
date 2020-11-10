@@ -38,7 +38,8 @@ export default {
             })
             if (!initialWorkingSet[hash].length) {
                 delete initialWorkingSet[hash]
-                throw new Error('Object set must have a `keyword` field to be searched in.')
+                console.error('Object set must have a `keyword` field to be searched in.')
+                return objectSet
             }
         }
 

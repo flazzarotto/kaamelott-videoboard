@@ -1,4 +1,6 @@
 // static videoLoader types
+import VideoManager from "@/lib/VideoManager/VideoManager";
+
 export const VideoLoaderTypes = {
     get local() {
         return 'local'
@@ -15,6 +17,7 @@ export class VideoLoader {
     #_url
     #_fetch
     #_match
+    videoManager
 
     // type: local / remote
     get type() {
@@ -35,7 +38,7 @@ export class VideoLoader {
     }
 
     /**
-     * @param fetchMethod {function(parameters: {}, callback: {function(video: Video, index: Number)} )}
+     * @param fetchMethod {function(parameters: {}, callback: {function(video: Video, index: Number)}, next: {function} )}
      * @param matchMethod {function({string?} url)}
      * @param type {string} VideoLoaderType.local or VideoLoaderType.remote
      */
@@ -46,19 +49,20 @@ export class VideoLoader {
         this.#_fetch = fetchMethod
         this.#_match = matchMethod
         this.#_type = type
+        this.videoManager = VideoManager
     }
 
     /**
      * Create video object sent to cbFn
      * @param parameters
-     * @param cbFn
+     * @param next {function(VideoLoader)}
      * @returns {*}
      */
-    fetch(parameters, cbFn) {
+    fetch(parameters, next) {
         if (!this.url && this.#_type !== VideoLoaderTypes.local) {
             console.error('No URL provided')
         }
-        return this.#_fetch(parameters, cbFn)
+        return this.#_fetch(parameters, next)
     }
 
     /**

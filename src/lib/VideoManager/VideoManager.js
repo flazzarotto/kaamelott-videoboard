@@ -23,6 +23,11 @@ const VideoManager = {
      */
     episodes: {},
     /**
+     * Loader used to fetch videos and other data
+     * @type VideoLoader
+     */
+    videoLoader: null,
+    /**
      * Register video adapter(s) to manage video sources
      * @param adapters list of adapters
      */
@@ -47,7 +52,10 @@ const VideoManager = {
      * @param embedParameters list of html parameters for iframe
      * @return Object video representation
      */
-    addVideo(index, video, embedParameters = {}) {
+    addVideo(index, video, embedParameters = {
+        frameborder: "0",
+        allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    }) {
         let {link, keywords, episode, title, characters, script, id} = video.expose()
         // remove trailing spaces
         link = link.replace(/(\s+)|(\s+$)/g, '')

@@ -1,32 +1,34 @@
 <template>
-  <div :class="{'video-component': 1, openInfos}">
-    <div id="copy-links">
-      <a @click="copyToClipboard(embedCode, {type: 'code'}, $event)"><i class="icon-code"></i></a>
-<!--   TODO add internal link instead of external   -->
-      <a @click="copyToClipboard(href, {type: 'lien'}, $event)" :href="href"><i class="icon-link"></i></a>
-      <span :class="{'helper': 1, active: helper}">{{ helperText }}</span>
-    </div>
-    <div class="video-container" :style="computedStyle" v-if="!currentVideo && thumbnail.length">
-      <img :src="thumbnail" :alt="title" @click="setCurrentVideo()"/>
-      <div class="overlay"></div>
-      <div class="click"></div>
-    </div>
-    <div class="video-container" :style="computedStyle" v-else>
-      <video v-if="type === 'local'" :src="src"/>
-      <div v-else v-html="autoplay"></div>
-    </div>
-    <div :class="{text: 1, open: openInfos}">
-      <h2 class="info-toggler" @click="openInfos = !openInfos">
-        <em :title="openInfos ? null : title">{{ title }}</em>
-        <span :class="{openInfos}">▼</span>
-      </h2>
-      <div :class="{show: openInfos}">
-        <p class="characters">{{ characters.join(', ') }}</p>
-        <p class="script" v-if="script.length" v-html="scriptWithStageDirections"></p>
-        <p v-show="false">{{ keywords.replace(/,/g, ', ') }}</p>
+  <div :class="{'video-component': 1, openInfos}" ref="videoComponent">
+    <div v-if="visible">
+      <div id="copy-links">
+        <a @click="copyToClipboard(embedCode, {type: 'code'}, $event)"><i class="icon-code"></i></a>
+        <!--   TODO add internal link instead of external   -->
+        <a @click="copyToClipboard(href, {type: 'lien'}, $event)" :href="href"><i class="icon-link"></i></a>
+        <span :class="{'helper': 1, active: helper}">{{ helperText }}</span>
       </div>
+      <div class="video-container" :style="computedStyle" v-if="!currentVideo && thumbnail.length">
+        <img :src="thumbnail" :alt="title" @click="setCurrentVideo()"/>
+        <div class="overlay"></div>
+        <div class="click"></div>
+      </div>
+      <div class="video-container" :style="computedStyle" v-else>
+        <video v-if="type === 'local'" :src="src"/>
+        <div v-else v-html="autoplay"></div>
+      </div>
+      <div :class="{text: 1, open: openInfos}">
+        <h2 class="info-toggler" @click="openInfos = !openInfos">
+          <em :title="openInfos ? null : title">{{ title }}</em>
+          <span :class="{openInfos}">▼</span>
+        </h2>
+        <div :class="{show: openInfos}">
+          <p class="characters">{{ characters.join(', ') }}</p>
+          <p class="script" v-if="script.length" v-html="scriptWithStageDirections"></p>
+          <p v-show="false">{{ keywords.replace(/,/g, ', ') }}</p>
+        </div>
+      </div>
+      <span class="episode">{{ episode + ' - ' + episodeTitle }}</span>
     </div>
-    <span class="episode">{{ episode + ' - ' + episodeTitle }}</span>
   </div>
 </template>
 
@@ -92,6 +94,14 @@ export default {
       type: String,
       default: ''
     },
+    windowScrollTop: {
+      type: Number,
+      default: -1
+    },
+    windowHeight: {
+      type: Number,
+      default: -1
+    }
   },
   data() {
     return {
@@ -103,10 +113,18 @@ export default {
         height: '0',
         width: '100%',
         'padding-bottom': (this.ratio * 100) + '%'
-      }
+      },
+      component: null,
+      hasBeenShown: false
     }
   },
   computed: {
+    visible() {
+      if (this.component) {
+        return this.calcVisibility()
+      }
+      return false
+    },
     // generate absolute link to this video
     href() {
       return routeCalculator('videoDetail', {video: this.hash})
@@ -125,13 +143,33 @@ export default {
     scriptWithStageDirections() {
       return this.script
           .replace(/\[\.\.\.\]/g, '{...}')
-          .replace(/\[([^\]]+)\]/g,`<i>~$1~</i>`)
-          .replace(/\(([^)]+)\)/g,`<em>($1)</em>`)
+          .replace(/\[([^\]]+)\]/g, `<i>~$1~</i>`)
+          .replace(/\(([^)]+)\)/g, `<em>($1)</em>`)
           .replace(/{\.\.\.}/g, '[...]')
     }
   },
+  mounted() {
+    this.component = this.$refs.videoComponent
+  },
   methods: {
     trans,
+    calcVisibility() {
+      if (this.hasBeenShown) {
+        return true
+      }
+
+      let errorMargin = 300
+      let offsetTop = this.component.offsetTop - errorMargin
+      let offsetHeight = this.component.offsetHeight + errorMargin
+
+      let visibility = (this.windowScrollTop <= (offsetTop + offsetHeight))
+          && ((this.windowScrollTop + this.windowHeight) >= offsetTop)
+
+      if (visibility) {
+        this.hasBeenShown = true
+      }
+      return visibility
+    },
     setCurrentVideo() {
       this.store.setCurrentVideo(this.src)
     },
@@ -163,10 +201,16 @@ export default {
 
 .video-component {
   @include video-component;
-  background: rgba(255, 255, 255, .7);
   flex-direction: column;
   height: min-content;
-  position: relative;
+
+  & > div {
+    position: relative;
+    background: rgba(255, 255, 255, .7);
+    border: 1px solid white;
+    padding-bottom: 7.5px;
+    height: min-content;
+  }
 
   &.openInfos {
     height: auto;
@@ -178,10 +222,10 @@ export default {
     margin: auto;
     display: flex;
     flex-direction: column;
-    height: 100%;
     justify-content: flex-start;
     font-size: 0.9rem;
     padding: 7.5px 7.5px 15px;
+
     .script {
       text-align: left;
       white-space: pre-line;
@@ -192,11 +236,13 @@ export default {
         text-align: center;
       }
     }
+
     h2 {
       font-size: 1.1rem;
       margin: 7.5px 0 7.5px;
       position: relative;
       display: block;
+
       em {
         white-space: nowrap;
         overflow: hidden;
@@ -204,6 +250,7 @@ export default {
         display: inline-block;
         max-width: calc(100% - 32px);
       }
+
       & + div {
         display: flex;
         flex-direction: column;
@@ -214,6 +261,7 @@ export default {
         transition: max-height 0s .3s linear, transform .3s ease;
         transform: scaleY(0);
         transform-origin: top left;
+
         &.show {
           max-height: 100%;
           transform: scaleY(1);
@@ -221,6 +269,7 @@ export default {
         }
       }
     }
+
     &.open {
       h2 {
         em {
@@ -345,13 +394,15 @@ export default {
   bottom: 0;
   padding: 5px;
   z-index: 12;
+
   a {
     @include btn;
     color: black;
   }
+
   .helper {
     position: absolute;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 3px;
     font-size: 0.8rem;
