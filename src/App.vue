@@ -33,6 +33,9 @@ export default {
 @import '~@/assets/scss/global';
 
 h1 {
+  @include kaamelott;
+  font-size: 3rem;
+
   &, figure {
     vertical-align: middle;
   }

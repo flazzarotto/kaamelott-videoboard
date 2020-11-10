@@ -1,3 +1,5 @@
+@import '~@/assets/css/folkard.css';
+
 @mixin video-component() {
   margin: 0 7.5px 15px;
   width: 320px;
@@ -15,4 +17,10 @@
   &:hover, &:active, &:focus {
     background: rgba(128,128,128, 0.9);
   }
+}
+
+@mixin kaamelott() {
+  font-family: folkard, serif;
+  text-indent: 10%;
+  text-transform: uppercase;
 }

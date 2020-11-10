@@ -27,7 +27,9 @@
           <p v-show="false">{{ keywords.replace(/,/g, ', ') }}</p>
         </div>
       </div>
-      <span class="episode">{{ episode + ' - ' + episodeTitle }}</span>
+      <span class="episode">{{ episode }}
+        <span class="title">{{ episodeTitleUnaccented }}</span>
+      </span>
     </div>
   </div>
 </template>
@@ -119,6 +121,9 @@ export default {
     }
   },
   computed: {
+    episodeTitleUnaccented() {
+      return this.episodeTitle.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    },
     visible() {
       if (this.component) {
         return this.calcVisibility()
@@ -428,6 +433,10 @@ export default {
   margin: -20px 75px 0 7.5px;
   font-size: 0.8rem;
   text-align: left;
+
+  .title {
+    @include kaamelott;
+  }
 }
 
 </style>

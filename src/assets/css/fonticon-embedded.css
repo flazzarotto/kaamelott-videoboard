@@ -2,9 +2,9 @@
 
  @font-face {
   font-family: 'fonticon';
-  src: url('../font/fonticon.eot?24478695');
-  src: url('../font/fonticon.eot?24478695#iefix') format('embedded-opentype'),
-       url('../font/fonticon.svg?24478695#fonticon') format('svg');
+  src: url('../font/fonticon/fonticon.eot?24478695');
+  src: url('../font/fonticon/fonticon.eot?24478695#iefix') format('embedded-opentype'),
+       url('../font/fonticon/fonticon.svg?24478695#fonticon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
