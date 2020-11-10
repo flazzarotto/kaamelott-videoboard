@@ -5,6 +5,7 @@
     <div v-if="!videos.length">{{ trans('video-list:no-result') }}</div>
     <div v-for="k in (new Array(5))" :key="k" class="empty"></div>
   </div>
+  <a id="top" @click="scrollToTop" :class="{show: scrollTop > 0.7*windowHeight}">⏫</a>
 </template>
 
 <script>
@@ -55,6 +56,9 @@ export default {
     handleScroll() {
       this.scrollTop = document.documentElement.scrollTop
       this.windowHeight = window.innerHeight
+    },
+    scrollToTop() {
+      window.scroll(0,0)
     }
   },
   setup() {
@@ -72,6 +76,32 @@ export default {
   justify-content: space-evenly;
   @media (min-width: 715px) {
     justify-content: space-between;
+  }
+}
+
+#top {
+  color: black;
+  font-size: 3rem;
+  font-weight: bold;
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  z-index: 15;
+  width: 3rem; height: 3rem;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity .3s ease;
+
+  &.show {
+    opacity: .7;
+    pointer-events: auto;
+    &:hover,&:active,&:focus {
+      opacity: 1;
+      transition: opacity 0s ease;
+    }
   }
 }
 
