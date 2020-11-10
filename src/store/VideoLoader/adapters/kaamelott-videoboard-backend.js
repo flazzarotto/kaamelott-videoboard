@@ -49,7 +49,6 @@ async function getAll(baseUri, requestUri, requestInit) {
 export const kvbLoader = new VideoLoader(
     async function (parameters, next) {
         parameters
-        next
 
         let requestInit = {
             headers: new Headers({
@@ -59,6 +58,7 @@ export const kvbLoader = new VideoLoader(
             // mode: "cors",
             cache: 'default'
         }
+
         for (let type in mapper) {
             // fetch relations
             const data = await getAll(this.url, '/'+type, requestInit)

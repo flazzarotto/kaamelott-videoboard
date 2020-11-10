@@ -24,8 +24,19 @@ export const availableSorts = {
 }
 
 export default {
+    /**
+     * Returns a filtered set of object according to fulltext search on one field and/or exact match on many fields
+     * @param searchText words to look for (string.length < 3 for no fulltext)
+     * @param objectSet set of object to look in
+     * @param requiredFields object like {requiredFieldName: neededValue, ...} - leave blank for no search
+     * @param order {string} order type, in {availableSorts}
+     * @param sort {string} asc|desc
+     * @param searchField field to look into for fulltext search, default 'keywords'
+     * @param scoreRequired {Number} object score required to be returned - should be > 0
+     * @returns {*}
+     */
     search(searchText, objectSet, requiredFields = {}, order = 'score', sort = 'asc',
-           searchField = 'keywords') {
+           searchField = 'keywords', scoreRequired = .2) {
         const hash = sha1(JSON.stringify(objectSet))
 
         if (!initialWorkingSet[hash]) {
@@ -128,7 +139,7 @@ export default {
             }
         }
 
-        const result = workingSet.filter(x => x.score > 0.1)
+        const result = workingSet.filter(x => x.score > scoreRequired)
         result.sort(
             (availableSorts[order] ?? availableSorts['score'])(
                 (sort === 'asc') ? 1 : -1
