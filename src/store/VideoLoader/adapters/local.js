@@ -37,7 +37,7 @@ export const localLoader = new VideoLoader(
                     name: data.title,
                     url: data.link,
                     partOfEpisode: data.episode,
-                    people: data.characters.map(x => characters[x]),
+                    characters: data.characters.map(x => characters[x]),
                     tags: data.keywords
                 }
             )

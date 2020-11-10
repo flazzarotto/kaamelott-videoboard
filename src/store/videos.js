@@ -20,10 +20,17 @@ export const next = (callback) => (videoLoader) => {
     callback(VideoManager)
 }
 
-export const getVideoData = async function(next) {
+export const getVideoData = function(next) {
     // generic fetch function with callback
-    const fetchFunction = async (videoLoader, params = {}) => {
-        await videoLoader.fetch(params, next)
+    const fetchFunction = (videoLoader, params = {}, fallback) => {
+        if (!videoLoader.isLocal()) {
+            videoLoader.fetch(params, next).catch(e => {
+                fallback(e)
+            })
+        }
+        else {
+            videoLoader.fetch(params, next)
+        }
     }
     // check compliant loaders
     for (let videoLoader of videoLoaders) {
@@ -34,21 +41,20 @@ export const getVideoData = async function(next) {
                 continue
             }
         }
-        try {
-            // use first compliant loader
-            await fetchFunction(videoLoader)
-        } catch (e) {
+
+        // use first compliant loader
+        fetchFunction(videoLoader, {}, (e) => {
             console.warn(e.message)
             // fallback if backend down or no available loader
             if (!videoLoader.isLocal()) {
                 try {
                     localLoader.match()
-                    await fetchFunction(localLoader)
+                    fetchFunction(localLoader)
                 } catch (e) {
                     console.error(e.message)
                 }
             }
-        }
+        })
         break
     }
 }

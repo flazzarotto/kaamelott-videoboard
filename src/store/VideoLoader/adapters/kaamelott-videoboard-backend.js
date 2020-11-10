@@ -102,8 +102,9 @@ export const kvbLoader = new VideoLoader(
             this.videoManager.addVideo(++index, video)
         }
 
-        // throw new Error('VideoLoader not implemented yet')
-        next(this)
+        next
+        throw new Error('VideoLoader not implemented yet')
+        // next(this)
     },
     function (backendUrl) {
         return !!backendUrl && backendUrl.match(/\/api$/)
