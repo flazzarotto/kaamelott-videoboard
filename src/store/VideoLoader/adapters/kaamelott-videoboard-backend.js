@@ -24,25 +24,29 @@ const mapper = {
     },
 }
 
+async function getPage(baseUri, request, cbFn) {
+    const json = await (await fetch(request)).json()
+
+    const {'hydra:view': hydraView, 'hydra:member': members} = json
+
+    if (hydraView && hydraView['hydra:next']) {
+        let nextUri = baseUri + hydraView['hydra:next'].replace(/\/api/, '')
+        cbFn(nextUri)
+    }
+    return members
+}
+
 async function getAll(baseUri, requestUri, requestInit) {
     let set = []
-    let done = false
     requestUri = baseUri + requestUri
     do {
         // TODO fetch clips
         let request = new Request(requestUri, requestInit)
-        const json = await (await fetch(request)).json()
-
-        const {'hydra:view': hydraView, 'hydra:member': members} = json
-
-        set = set.concat(members)
-
-        if (hydraView && hydraView['hydra:next']) {
-            requestUri = baseUri + hydraView['hydra:next'].replace(/\/api/, '')
-        } else {
-            done = true
-        }
-    } while (!done)
+        requestUri = null
+        set = set.concat(await getPage(baseUri, request, (nextUri) => {
+            requestUri = nextUri
+        }))
+    } while (requestUri)
     return set
 }
 
@@ -61,7 +65,7 @@ export const kvbLoader = new VideoLoader(
 
         for (let type in mapper) {
             // fetch relations
-            const data = await getAll(this.url, '/'+type, requestInit)
+            const data = await getAll(this.url, '/' + type, requestInit)
 
             // map relations to @id
             data.map(piece => {
@@ -71,38 +75,48 @@ export const kvbLoader = new VideoLoader(
             })
         }
 
-        const clips = await getAll(this.url, '/clips', requestInit)
+        let requestUri = this.url + '/clips'
+        let index = 0
 
-        // relation transformer
-        clips.map(clip => {
-            Object.keys(clip).map(prop => {
-                if (prop.match(/^@/)) {
-                    return
-                }
-                const values = clip[prop] instanceof Array ? clip[prop] : [clip[prop]]
-                values.map((value, index) => {
-                    if (!memory[value]) {
+        do {
+            let request = new Request(requestUri, requestInit)
+            requestUri = null
+            const clips = await getPage(this.url, request, (nextUri) => {
+                requestUri = nextUri
+            })
+
+
+            // relation transformer
+            clips.map(clip => {
+                Object.keys(clip).map(prop => {
+                    if (prop.match(/^@/)) {
                         return
                     }
-                    if (clip[prop] instanceof Array) {
-                        clip[prop][index] = memory[value]
-                    }
-                    else {
-                        clip[prop] = memory[value]
-                    }
+                    const values = clip[prop] instanceof Array ? clip[prop] : [clip[prop]]
+                    values.map((value, index) => {
+                        if (!memory[value]) {
+                            return
+                        }
+                        if (clip[prop] instanceof Array) {
+                            clip[prop][index] = memory[value]
+                        } else {
+                            clip[prop] = memory[value]
+                        }
+                    })
                 })
             })
-        })
 
-        let index = 0
-        for (let clip of clips) {
-            clip.tags = clip.tags.join(',')
-            let video = new Video(clip)
-            this.videoManager.addEpisode(video.partOfEpisode)
-            this.videoManager.addVideo(++index, video)
-        }
+            // TODO check why relation transformer not working anymore
 
-        next(this)
+            for (let clip of clips) {
+                clip.tags = clip.tags.join(',')
+                let video = new Video(clip)
+                this.videoManager.addEpisode(video.partOfEpisode)
+                this.videoManager.addVideo(++index, video)
+            }
+
+            next(this)
+        } while (requestUri)
     },
     function (backendUrl) {
         return !!backendUrl && backendUrl.match(/\/api$/)

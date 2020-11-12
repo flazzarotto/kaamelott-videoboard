@@ -12,6 +12,7 @@ const videoLoaders = [
 VideoManager.registerAdapters(youtubeLong, youtubeShort)
 
 export const next = (callback) => (videoLoader) => {
+    console.log('update VideoManager')
     // videoLoader used to load videos
     VideoManager.loader = videoLoader
     // random sorting for home page
@@ -44,7 +45,7 @@ export const getVideoData = function(next) {
 
         // use first compliant loader
         fetchFunction(videoLoader, {}, (e) => {
-            console.warn(e.message)
+            console.error(e.message)
             // fallback if backend down or no available loader
             if (!videoLoader.isLocal()) {
                 try {
