@@ -133,6 +133,7 @@ select, input, button {
   font-size: 1.5rem;
   height: min-content;
   max-width: 100%;
+  height: auto;
 }
 
 nav {

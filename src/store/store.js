@@ -20,6 +20,7 @@ const state = reactive({
 
 const mutations = {
     updateFromVideoManager(VideoManager) {
+        state.videos = []
         state.videos = VideoManager.videos
         state.episodes = VideoManager.episodes
     },
