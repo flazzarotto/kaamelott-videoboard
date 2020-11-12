@@ -70,7 +70,11 @@ export const kvbLoader = new VideoLoader(
             // map relations to @id
             data.map(piece => {
                 if (piece instanceof Object) {
-                    memory._hydrate = {value: piece['@id'], data: mapper[type](piece)}
+                    let data = mapper[type](piece)
+                    memory._hydrate = {value: piece['@id'], data: data}
+                    if (type === 'episodes') {
+                        this.videoManager.addEpisode(data)
+                    }
                 }
             })
         }
@@ -111,7 +115,6 @@ export const kvbLoader = new VideoLoader(
             for (let clip of clips) {
                 clip.tags = clip.tags.join(',')
                 let video = new Video(clip)
-                this.videoManager.addEpisode(video.partOfEpisode)
                 this.videoManager.addVideo(++index, video)
             }
 
