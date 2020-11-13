@@ -56,7 +56,11 @@ const VideoManager = {
         frameborder: "0",
         allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     }) {
+
         let {link, keywords, episode, title, characters, script, id} = video.expose()
+        if (this.videos.filter(v => v.id === id).length) {
+            return
+        }
         // remove trailing spaces
         link = link.replace(/(\s+)|(\s+$)/g, '')
         // default embed params

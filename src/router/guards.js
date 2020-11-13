@@ -5,9 +5,18 @@ import {getSeoDataFromRoute} from "@/lib/functions/setSeoDataFromRoute";
 
 const store = createStore()
 
+
 export default {
     // executed before each routing
-    beforeEach: ({router}) => function (to, from, next) {
+    beforeEach: ({app, router}) => function (to, from, next) {
+
+        const nextBeforeEach = function() {
+            if (!app.isMounted) {
+                app.mount('#app')
+                app.isMounted = true
+            }
+            next()
+        }
 
         switch (to.name) {
             case 'home':
@@ -19,7 +28,7 @@ export default {
                             // if hitting 'Home' button from another page, try to get search parameters back, and redirect
                             if (Object.values(store.state.search).join('')
                                 .replace(/\s+/, '').length) {
-                                next()
+                                nextBeforeEach()
 
                                 router.replace({
                                     name: 'home', query: paramsCalculator(store.state.search)
@@ -40,10 +49,14 @@ export default {
                 // store and router injection for SEO data fetching
                 route.inject({store, currentRoute: to})
                 // generate SEO meta tags
-                getSeoDataFromRoute(route)
+                getSeoDataFromRoute(route).then(nextBeforeEach)
             }
+            else {
+                nextBeforeEach()
+            }
+        } else {
+            nextBeforeEach()
         }
 
-        next()
     }
 }

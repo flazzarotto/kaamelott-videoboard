@@ -13,6 +13,7 @@ const state = reactive({
     search: defaultSearch,
     available_languages,
     lang: available_languages[0],
+    loaded: false,
     get translations() {
         return translations[this.lang]
     }
@@ -23,6 +24,7 @@ const mutations = {
         state.videos = []
         state.videos = VideoManager.videos
         state.episodes = VideoManager.episodes
+        state.loaded = !!VideoManager.loader
     },
     changeSearch(search) {
         search = {...defaultSearch, ...search}

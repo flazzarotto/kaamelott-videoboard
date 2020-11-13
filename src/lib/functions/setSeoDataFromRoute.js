@@ -1,8 +1,5 @@
-/**
- * Extracts meta from route
- * @param route
- */
-export function getSeoDataFromRoute(route) {
+function processMetas(route) {
+    console.info('process metas')
     const metas = {}
     for (let meta in route.metas) {
         if (route.metas[meta] instanceof Function) {
@@ -10,6 +7,17 @@ export function getSeoDataFromRoute(route) {
         }
     }
     setSeoData(metas)
+}
+
+/**
+ * Extracts meta from route
+ * @param route
+ */
+export async function getSeoDataFromRoute(route) {
+    if (route.fetch) {
+        await route.fetch()
+    }
+    processMetas(route)
 }
 
 /**
@@ -62,6 +70,7 @@ function setSeoData({
             continue
         }
 
+        console.log(metaValue)
         metaValue = metaValue.replace(/\s+/g, ' ')
 
         // create and add tag to <head> if not present

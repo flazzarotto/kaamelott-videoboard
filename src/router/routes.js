@@ -27,16 +27,16 @@ const videoDetailRoute = {
     name: 'videoDetail',
     path: '/video/:video',
     component: SingleVideo,
-    fetch() {
-        if (!this.data) {
-            this.data = this.store.state.videos.filter(x => x.hash === this.currentRoute.params.video)[0] ?? []
+    async fetch() {
+        while (!this.store.state.loaded) {
+            await (async () => new Promise(resolve => setTimeout(resolve, 100)))()
         }
-        return this.data
+        this.data = this.store.state.videos.filter(x => x.hash === this.currentRoute.params.video)[0] ?? null
     },
-    get metas() {
+    get metas () {
         return {
             title: () => {
-                const video = this.fetch()
+                const video = this.data
                 let episode = episodeParser(video.episode)
                     .map(x => this.trans('episode:' + x.replace(/[0-9]+/, ''),
                         {number: x.replace(/[LTE]/, '')}))
@@ -46,9 +46,9 @@ const videoDetailRoute = {
                     episode, title: video.title
                 })
             },
-            'meta.description': () => this.fetch().script,
-            'meta.og:image': () => this.fetch().thumbnail,
-            'meta.og:video': () => this.fetch().link,
+            'meta.description': () => this.data.script,
+            'meta.og:image': () => this.data.thumbnail,
+            'meta.og:video': () => this.data.link,
         }
     }
 }

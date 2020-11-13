@@ -51,7 +51,7 @@ export const localLoader = new VideoLoader(
             )
         }
 
-        next(this)
+        next(this, true)
     },
     function (backendUrl) {
         return !backendUrl

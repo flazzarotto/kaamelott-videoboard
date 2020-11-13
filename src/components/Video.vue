@@ -125,6 +125,9 @@ export default {
       return this.episodeTitle.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     },
     visible() {
+      if (this.directLink) {
+        return true
+      }
       if (this.component) {
         return this.calcVisibility()
       }

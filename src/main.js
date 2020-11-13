@@ -8,6 +8,6 @@ const app = createApp(App)
 app.provide(storeSymbol, createStore())
 app.use(router)
 
-router.beforeEach(guards.beforeEach({router}))
+router.beforeEach(guards.beforeEach({router, app}))
 
-app.mount('#app')
+// app.mount('#app')

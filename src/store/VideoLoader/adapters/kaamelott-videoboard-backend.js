@@ -110,15 +110,13 @@ export const kvbLoader = new VideoLoader(
                 })
             })
 
-            // TODO check why relation transformer not working anymore
-
             for (let clip of clips) {
                 clip.tags = clip.tags.join(',')
                 let video = new Video(clip)
                 this.videoManager.addVideo(++index, video)
             }
 
-            next(this)
+            next(this, requestUri === null)
         } while (requestUri)
     },
     function (backendUrl) {

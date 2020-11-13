@@ -19,6 +19,7 @@ export default {
   computed: {
     // find correct video
     video() {
+
       const videos = this.store.state.videos.filter(x => x.hash === this.$route.params.video)
       if (videos.length) {
         return videos[0]

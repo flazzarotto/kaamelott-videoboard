@@ -11,25 +11,25 @@ const videoLoaders = [
 // register adapters (youtube) to manage video sources
 VideoManager.registerAdapters(youtubeLong, youtubeShort)
 
-export const next = (callback) => (videoLoader) => {
+export const next = (callback) => (videoLoader, end = false) => {
     console.log('update VideoManager')
-    // videoLoader used to load videos
-    VideoManager.loader = videoLoader
-    // random sorting for home page
-    VideoManager.videos = VideoManager.videos.sort(() => .5 - Math.random())
+
+    if (end) {
+        // videoLoader used to load videos
+        VideoManager.loader = videoLoader
+    }
 
     callback(VideoManager)
 }
 
-export const getVideoData = function(next) {
+export const getVideoData = function (next) {
     // generic fetch function with callback
     const fetchFunction = (videoLoader, params = {}, fallback) => {
         if (!videoLoader.isLocal()) {
             videoLoader.fetch(params, next).catch(e => {
                 fallback(e)
             })
-        }
-        else {
+        } else {
             videoLoader.fetch(params, next)
         }
     }
